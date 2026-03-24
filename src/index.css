@@ -1,38 +1,46 @@
 @import "tailwindcss";
 
 /* ================================
-   PROMPTOPTIM - GREEN IT DESIGN SYSTEM
+   PROMPTOPTIM - NEON GREEN IT DESIGN SYSTEM
    ================================ */
 
 /* Custom CSS Variables */
 :root {
-  /* Background Colors - Dark Mode Eco-Friendly */
-  --bg-primary: #0a0f0d;
-  --bg-secondary: #111916;
-  --bg-surface: #1a2420;
-  --bg-surface-hover: #243029;
+  /* Background Colors - Dark Mode */
+  --bg-primary: #060d09;
+  --bg-secondary: #0c1a12;
+  --bg-surface: #122019;
+  --bg-surface-hover: #1a2e22;
 
   /* Glassmorphism */
-  --glass-bg: rgba(26, 36, 32, 0.7);
-  --glass-border: rgba(16, 185, 129, 0.2);
+  --glass-bg: rgba(12, 26, 18, 0.75);
+  --glass-border: rgba(57, 255, 20, 0.15);
 
-  /* Primary Colors - Emerald/Teal for Green IT */
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-light: #34d399;
-  --accent: #14b8a6;
+  /* Primary Colors - NEON GREEN */
+  --primary: #39ff14;
+  --primary-hover: #32e010;
+  --primary-light: #7dff5a;
+  --primary-rgb: 57, 255, 20;
+  --accent: #00ff87;
+  --accent-rgb: 0, 255, 135;
+
+  /* Neon Glow Values */
+  --neon-glow-sm: 0 0 5px rgba(57, 255, 20, 0.4), 0 0 10px rgba(57, 255, 20, 0.2);
+  --neon-glow-md: 0 0 7px rgba(57, 255, 20, 0.5), 0 0 15px rgba(57, 255, 20, 0.3), 0 0 30px rgba(57, 255, 20, 0.1);
+  --neon-glow-lg: 0 0 10px rgba(57, 255, 20, 0.6), 0 0 20px rgba(57, 255, 20, 0.4), 0 0 40px rgba(57, 255, 20, 0.2), 0 0 80px rgba(57, 255, 20, 0.1);
+  --neon-text-glow: 0 0 7px rgba(57, 255, 20, 0.7), 0 0 15px rgba(57, 255, 20, 0.4), 0 0 30px rgba(57, 255, 20, 0.2);
 
   /* Text Colors */
-  --text-primary: #f1f5f9;
+  --text-primary: #edf5f0;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
 
-  /* Eco Score Colors */
-  --eco-a: #22c55e;
-  --eco-b: #84cc16;
-  --eco-c: #eab308;
-  --eco-d: #f97316;
-  --eco-e: #ef4444;
+  /* Eco Score Colors - with neon vibes */
+  --eco-a: #39ff14;
+  --eco-b: #a0ff00;
+  --eco-c: #ffdd00;
+  --eco-d: #ff7e00;
+  --eco-e: #ff1744;
 
   /* Model Colors */
   --model-mistral: #ff7e00;
@@ -42,10 +50,10 @@
   --model-midjourney: #9c5cd4;
 
   /* Status Colors */
-  --success: #22c55e;
-  --warning: #eab308;
-  --error: #ef4444;
-  --info: #3b82f6;
+  --success: #39ff14;
+  --warning: #ffdd00;
+  --error: #ff1744;
+  --info: #4dc9f6;
 }
 
 /* Base Styles */
@@ -67,12 +75,15 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* subtle radial glow in the bg center */
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(57, 255, 20, 0.03) 0%, transparent 60%);
+  min-height: 100vh;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -82,22 +93,25 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
   border-radius: 4px;
+  box-shadow: var(--neon-glow-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-hover);
+  background: var(--primary-light);
 }
 
 /* Selection */
 ::selection {
-  background: var(--primary);
-  color: var(--bg-primary);
+  background: rgba(57, 255, 20, 0.3);
+  color: #fff;
+  text-shadow: var(--neon-text-glow);
 }
 
 /* Focus Styles for Accessibility */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+  box-shadow: var(--neon-glow-sm);
 }
 
 /* ================================
@@ -107,18 +121,31 @@ body {
 /* Glass Card Effect */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Gradient Text */
+.glass-card:hover {
+  border-color: rgba(57, 255, 20, 0.25);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.05), 0 0 30px rgba(57, 255, 20, 0.03);
+}
+
+/* Gradient Text - Neon Glow */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--primary-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.4));
+}
+
+/* Neon Text Utility */
+.neon-text {
+  color: var(--primary);
+  text-shadow: var(--neon-text-glow);
 }
 
 /* Button Base */
@@ -133,8 +160,9 @@ body {
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
+  position: relative;
 }
 
 .btn:disabled {
@@ -145,11 +173,16 @@ body {
 .btn-primary {
   background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   color: var(--bg-primary);
+  box-shadow: var(--neon-glow-sm);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+  box-shadow: var(--neon-glow-lg);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-secondary {
@@ -161,6 +194,7 @@ body {
 .btn-secondary:hover:not(:disabled) {
   background: var(--bg-surface-hover);
   border-color: var(--primary);
+  box-shadow: var(--neon-glow-sm);
 }
 
 /* Input Styles */
@@ -174,7 +208,7 @@ body {
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 0.875rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 /* Input with left icon */
@@ -194,7 +228,7 @@ body {
 .input-field:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  box-shadow: var(--neon-glow-sm);
 }
 
 .input-field:disabled {
@@ -223,10 +257,11 @@ body {
   font-size: 0.75rem;
   color: var(--success);
   margin-top: 0.25rem;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
 }
 
 /* ================================
-   ECO SCORE BADGES
+   ECO SCORE BADGES - NEON
    ================================ */
 
 .eco-badge {
@@ -243,22 +278,27 @@ body {
 
 .eco-badge-a {
   background: var(--eco-a);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(57, 255, 20, 0.2);
 }
 
 .eco-badge-b {
   background: var(--eco-b);
+  box-shadow: 0 0 10px rgba(160, 255, 0, 0.4), 0 0 20px rgba(160, 255, 0, 0.2);
 }
 
 .eco-badge-c {
   background: var(--eco-c);
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.4), 0 0 20px rgba(255, 221, 0, 0.2);
 }
 
 .eco-badge-d {
   background: var(--eco-d);
+  box-shadow: 0 0 10px rgba(255, 126, 0, 0.4), 0 0 20px rgba(255, 126, 0, 0.2);
 }
 
 .eco-badge-e {
   background: var(--eco-e);
+  box-shadow: 0 0 10px rgba(255, 23, 68, 0.4), 0 0 20px rgba(255, 23, 68, 0.2);
 }
 
 /* ================================
@@ -325,11 +365,40 @@ body {
 
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: var(--neon-glow-sm);
   }
 
   50% {
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.5);
+    box-shadow: var(--neon-glow-lg);
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: var(--neon-text-glow);
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+    opacity: 0.8;
+  }
+}
+
+@keyframes neon-border-pulse {
+  0%, 100% {
+    border-color: rgba(57, 255, 20, 0.15);
+  }
+  50% {
+    border-color: rgba(57, 255, 20, 0.4);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
   }
 }
 
@@ -351,8 +420,51 @@ body {
   animation: pulse-glow 2s infinite;
 }
 
+.animate-neon-flicker {
+  animation: neon-flicker 4s infinite;
+}
+
+.animate-neon-border {
+  animation: neon-border-pulse 3s ease-in-out infinite;
+}
+
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* ================================
+   NEON ACCENT UTILITIES
+   ================================ */
+
+/* Neon underline on links */
+a.neon-link {
+  color: var(--primary);
+  text-decoration: none;
+  position: relative;
+}
+
+a.neon-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--primary);
+  box-shadow: var(--neon-glow-sm);
+  transition: width 0.3s ease;
+}
+
+a.neon-link:hover::after {
+  width: 100%;
+}
+
+/* Neon divider */
+.neon-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.3;
 }
 
 /* ================================

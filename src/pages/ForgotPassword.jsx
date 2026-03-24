@@ -25,8 +25,11 @@ const ForgotPassword = () => {
             <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
                 <div className="w-full max-w-md text-center">
                     <div className="glass-card p-8 animate-fade-in">
-                        <div className="w-16 h-16 rounded-full bg-[var(--success)]/20 flex items-center justify-center mx-auto mb-4">
-                            <CheckCircle className="w-8 h-8 text-[var(--success)]" />
+                        <div
+                            className="w-16 h-16 rounded-full bg-[var(--success)]/20 flex items-center justify-center mx-auto mb-4"
+                            style={{ boxShadow: '0 0 20px rgba(57, 255, 20, 0.3)' }}
+                        >
+                            <CheckCircle className="w-8 h-8" style={{ color: 'var(--success)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.5))' }} />
                         </div>
                         <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">
                             Email envoyé !
@@ -49,7 +52,10 @@ const ForgotPassword = () => {
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4">
+                    <div
+                        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4"
+                        style={{ boxShadow: 'var(--neon-glow-lg)' }}
+                    >
                         <Leaf className="w-8 h-8 text-[var(--bg-primary)]" />
                     </div>
                     <h1 className="text-2xl font-bold gradient-text">Mot de passe oublié</h1>

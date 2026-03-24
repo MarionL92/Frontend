@@ -39,6 +39,17 @@ const HistoryItem = ({ item }) => {
         });
     };
 
+    const getEcoGlow = (score) => {
+        switch (score?.toUpperCase()) {
+            case 'A': return '0 0 8px rgba(57, 255, 20, 0.4)';
+            case 'B': return '0 0 8px rgba(160, 255, 0, 0.3)';
+            case 'C': return '0 0 8px rgba(255, 221, 0, 0.3)';
+            case 'D': return '0 0 8px rgba(255, 126, 0, 0.3)';
+            case 'E': return '0 0 8px rgba(255, 23, 68, 0.3)';
+            default: return 'none';
+        }
+    };
+
     return (
         <div className="glass-card p-4 animate-fade-in">
             <div
@@ -57,12 +68,15 @@ const HistoryItem = ({ item }) => {
                             {modelInfo.name}
                         </span>
                         {item.green_data && (
-                            <div className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center text-[var(--bg-primary)] ${item.green_data.eco_score === 'A' ? 'bg-[var(--eco-a)]' :
-                                item.green_data.eco_score === 'B' ? 'bg-[var(--eco-b)]' :
-                                    item.green_data.eco_score === 'C' ? 'bg-[var(--eco-c)]' :
-                                        item.green_data.eco_score === 'D' ? 'bg-[var(--eco-d)]' :
-                                            'bg-[var(--eco-e)]'
-                                }`}>
+                            <div
+                                className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center text-[var(--bg-primary)] ${item.green_data.eco_score === 'A' ? 'bg-[var(--eco-a)]' :
+                                    item.green_data.eco_score === 'B' ? 'bg-[var(--eco-b)]' :
+                                        item.green_data.eco_score === 'C' ? 'bg-[var(--eco-c)]' :
+                                            item.green_data.eco_score === 'D' ? 'bg-[var(--eco-d)]' :
+                                                'bg-[var(--eco-e)]'
+                                    }`}
+                                style={{ boxShadow: getEcoGlow(item.green_data.eco_score) }}
+                            >
                                 {item.green_data.eco_score}
                             </div>
                         )}
@@ -103,7 +117,8 @@ const HistoryItem = ({ item }) => {
                                     e.stopPropagation();
                                     handleCopy();
                                 }}
-                                className="flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
+                                className="flex items-center gap-1 text-xs hover:underline"
+                                style={{ color: 'var(--primary)', textShadow: '0 0 5px rgba(57, 255, 20, 0.3)' }}
                             >
                                 {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                                 {copied ? 'Copié !' : 'Copier'}
@@ -111,7 +126,7 @@ const HistoryItem = ({ item }) => {
                         </div>
                         <pre
                             className="text-sm text-[var(--text-primary)] bg-[var(--bg-secondary)] p-3 rounded-lg whitespace-pre-wrap font-mono border-l-4"
-                            style={{ borderColor: modelInfo.color }}
+                            style={{ borderColor: modelInfo.color, boxShadow: `inset 4px 0 10px -4px ${modelInfo.color}30` }}
                         >
                             {item.optimized_prompt}
                         </pre>
@@ -121,11 +136,11 @@ const HistoryItem = ({ item }) => {
                     {item.green_data && (
                         <div className="flex flex-wrap gap-4 text-xs">
                             <div className="flex items-center gap-1 text-[var(--text-muted)]">
-                                <Leaf className="w-3 h-3 text-[var(--primary)]" />
+                                <Leaf className="w-3 h-3" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
                                 <span>{item.green_data.tokens_saved} tokens économisés</span>
                             </div>
                             <div className="flex items-center gap-1 text-[var(--text-muted)]">
-                                <Globe className="w-3 h-3 text-[var(--accent)]" />
+                                <Globe className="w-3 h-3" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 3px rgba(0, 255, 135, 0.4))' }} />
                                 <span>{item.green_data.co2_saved_g.toFixed(4)} g CO₂</span>
                             </div>
                         </div>
@@ -176,7 +191,10 @@ const History = () => {
             <div className="container max-w-3xl">
                 {/* Header */}
                 <div className="flex items-center gap-4" style={{ marginBottom: '1rem' }}>
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center">
+                    <div
+                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
+                        style={{ boxShadow: 'var(--neon-glow-md)' }}
+                    >
                         <HistoryIcon className="w-7 h-7 text-[var(--bg-primary)]" />
                     </div>
                     <div>
@@ -188,7 +206,7 @@ const History = () => {
                 {/* Content */}
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-16">
-                        <Loader2 className="w-10 h-10 text-[var(--primary)] animate-spin mb-4" />
+                        <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57, 255, 20, 0.5))' }} />
                         <p className="text-[var(--text-secondary)]">Chargement de l'historique...</p>
                     </div>
                 ) : error ? (

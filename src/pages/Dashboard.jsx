@@ -34,12 +34,14 @@ const StatCard = ({ icon: Icon, label, value, unit, color }) => (
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: `${color}20` }}
             >
-                <Icon className="w-4 h-4" style={{ color }} />
+                <Icon className="w-4 h-4" style={{ color, filter: `drop-shadow(0 0 4px ${color}80)` }} />
             </div>
             <span className="text-sm text-[var(--text-secondary)]">{label}</span>
         </div>
         <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-[var(--text-primary)]">{value}</span>
+            <span className="text-2xl font-bold" style={{ color: color, textShadow: `0 0 10px ${color}40` }}>
+                {value}
+            </span>
             {unit && <span className="text-sm text-[var(--text-muted)]">{unit}</span>}
         </div>
     </div>
@@ -100,7 +102,7 @@ const Dashboard = () => {
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="glass-card px-3 py-2 text-sm">
+                <div className="glass-card px-3 py-2 text-sm" style={{ boxShadow: 'var(--neon-glow-sm)' }}>
                     <p className="text-[var(--text-primary)]">{payload[0].name}</p>
                     <p className="text-[var(--text-secondary)]">{payload[0].value} prompts</p>
                 </div>
@@ -114,7 +116,10 @@ const Dashboard = () => {
             <div className="container">
                 {/* Header */}
                 <div className="flex items-center gap-4" style={{ marginBottom: '1.25rem' }}>
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center">
+                    <div
+                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
+                        style={{ boxShadow: 'var(--neon-glow-md)' }}
+                    >
                         <BarChart3 className="w-7 h-7 text-[var(--bg-primary)]" />
                     </div>
                     <div>
@@ -126,7 +131,7 @@ const Dashboard = () => {
                 {/* Content */}
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-16">
-                        <Loader2 className="w-10 h-10 text-[var(--primary)] animate-spin mb-4" />
+                        <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57, 255, 20, 0.5))' }} />
                         <p className="text-[var(--text-secondary)]">Chargement des statistiques...</p>
                     </div>
                 ) : error ? (
@@ -166,7 +171,7 @@ const Dashboard = () => {
                             {/* Model Usage Pie Chart */}
                             <div className="glass-card p-4">
                                 <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}>
-                                    <PieChart className="w-5 h-5 text-[var(--primary)]" />
+                                    <PieChart className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
                                         Répartition par modèle
                                     </h3>
@@ -199,7 +204,7 @@ const Dashboard = () => {
                                                 <div key={index} className="flex items-center gap-2 text-sm">
                                                     <div
                                                         className="w-3 h-3 rounded-full"
-                                                        style={{ backgroundColor: item.color }}
+                                                        style={{ backgroundColor: item.color, boxShadow: `0 0 6px ${item.color}60` }}
                                                     />
                                                     <span className="text-[var(--text-secondary)]">{item.name}</span>
                                                 </div>
@@ -216,7 +221,7 @@ const Dashboard = () => {
                             {/* Bar Chart */}
                             <div className="glass-card p-4">
                                 <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}>
-                                    <BarChart3 className="w-5 h-5 text-[var(--primary)]" />
+                                    <BarChart3 className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
                                         Utilisation par modèle
                                     </h3>
@@ -261,29 +266,29 @@ const Dashboard = () => {
                         {/* Impact Summary */}
                         <div className="glass-card p-4">
                             <div className="flex items-center gap-2 mb-6" style={{ marginLeft: '0.5rem' }}>
-                                <Globe className="w-5 h-5 text-[var(--primary)]" />
+                                <Globe className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                 <h3 className="font-semibold text-[var(--text-primary)]">
                                     Votre Impact Environnemental
                                 </h3>
                             </div>
                             <div className="grid sm:grid-cols-3 gap-6 text-center">
-                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                                    <Smartphone className="w-8 h-8 mx-auto mb-2 text-[var(--primary)]" />
-                                    <p className="text-lg font-bold text-[var(--text-primary)]">
+                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                    <Smartphone className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.4))' }} />
+                                    <p className="text-lg font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
                                         {((stats.total_co2_saved || 0) / 8.3 * 1000).toFixed(2)}
                                     </p>
                                     <p className="text-xs text-[var(--text-muted)]">recharges smartphone équivalentes</p>
                                 </div>
-                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                                    <Car className="w-8 h-8 mx-auto mb-2 text-[var(--accent)]" />
-                                    <p className="text-lg font-bold text-[var(--text-primary)]">
+                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                    <Car className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 6px rgba(0, 255, 135, 0.4))' }} />
+                                    <p className="text-lg font-bold" style={{ color: 'var(--accent)', textShadow: '0 0 8px rgba(0, 255, 135, 0.3)' }}>
                                         {((stats.total_co2_saved || 0) / 0.05).toFixed(2)}
                                     </p>
                                     <p className="text-xs text-[var(--text-muted)]">mètres en voiture électrique</p>
                                 </div>
-                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)]">
-                                    <Lightbulb className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
-                                    <p className="text-lg font-bold text-[var(--text-primary)]">
+                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                    <Lightbulb className="w-8 h-8 mx-auto mb-2" style={{ color: '#ffdd00', filter: 'drop-shadow(0 0 6px rgba(255, 221, 0, 0.4))' }} />
+                                    <p className="text-lg font-bold" style={{ color: '#ffdd00', textShadow: '0 0 8px rgba(255, 221, 0, 0.3)' }}>
                                         {((stats.total_co2_saved || 0) / 0.005).toFixed(2)}
                                     </p>
                                     <p className="text-xs text-[var(--text-muted)]">heures d'éclairage LED</p>

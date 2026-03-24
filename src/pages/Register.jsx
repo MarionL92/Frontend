@@ -4,14 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { Leaf, Mail, Lock, Loader2, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 
 // Password validation regex
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\.]).{8,}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}<>.]).{8,}$/;
 
 const passwordRules = [
     { test: (p) => p.length >= 8, label: 'Au moins 8 caractères' },
     { test: (p) => /[a-z]/.test(p), label: 'Une lettre minuscule' },
     { test: (p) => /[A-Z]/.test(p), label: 'Une lettre majuscule' },
     { test: (p) => /\d/.test(p), label: 'Un chiffre' },
-    { test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p), label: 'Un caractère spécial' },
+    { test: (p) => /[!@#$%^&*(),.?":{}<>]/.test(p), label: 'Un caractère spécial' },
 ];
 
 const Register = () => {
@@ -67,10 +67,10 @@ const Register = () => {
             <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
                 <div className="w-full max-w-md text-center">
                     <div className="glass-card animate-fade-in" style={{ padding: '25px' }}>
-                        <div className="absolute top-[-20px] left-[-20px] w-12 h-12 rounded-full bg-[var(--success)] flex items-center justify-center shadow-lg" style={{ display: 'none' }}>
-                             {/* Just in case they added absolute CSS to the old one, we preserve the centered one */}
-                        </div>
-                        <div className="w-16 h-16 rounded-full bg-[var(--success)]/20 flex items-center justify-center mx-auto" style={{ marginBottom: '15px' }}>
+                        <div
+                            className="w-16 h-16 rounded-full bg-[var(--success)]/20 flex items-center justify-center mx-auto"
+                            style={{ marginBottom: '15px', boxShadow: '0 0 20px rgba(57, 255, 20, 0.3)' }}
+                        >
                             <CheckCircle className="w-8 h-8 text-[var(--success)]" />
                         </div>
                         
@@ -101,12 +101,15 @@ const Register = () => {
             <div className="w-full max-w-lg mb-[20px]">
                 {/* Logo */}
                 <div className="text-center" style={{ marginBottom: '48px' }}>
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4">
+                    <div
+                        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4"
+                        style={{ boxShadow: 'var(--neon-glow-lg)' }}
+                    >
                         <Leaf className="w-8 h-8 text-[var(--bg-primary)]" />
                     </div>
                     <h1 className="text-2xl font-bold gradient-text">Créer un compte</h1>
                     <p className="text-[var(--text-secondary)]" style={{ marginTop: '24px' }}>
-                        Rejoignez la communauté Green IT
+                        Rejoignez la communauté <span style={{ color: 'var(--primary)', textShadow: '0 0 6px rgba(57, 255, 20, 0.3)' }}>Green IT</span>
                     </p>
                 </div>
 
@@ -176,6 +179,7 @@ const Register = () => {
                                             key={i}
                                             className={`flex items-center gap-2 text-xs ${rule.test(password) ? 'text-[var(--success)]' : 'text-[var(--text-muted)]'
                                                 }`}
+                                            style={rule.test(password) ? { textShadow: '0 0 6px rgba(57, 255, 20, 0.3)' } : {}}
                                         >
                                             {rule.test(password) ? (
                                                 <CheckCircle className="w-3 h-3" />
@@ -208,6 +212,7 @@ const Register = () => {
                                             ? 'border-[var(--success)]'
                                             : ''
                                         }`}
+                                    style={confirmPassword.length > 0 && passwordsMatch ? { boxShadow: '0 0 8px rgba(57, 255, 20, 0.2)' } : {}}
                                     required
                                     autoComplete="new-password"
                                 />
@@ -249,7 +254,8 @@ const Register = () => {
                         Déjà un compte ?{' '}
                         <Link
                             to="/login"
-                            className="text-[var(--primary)] hover:underline font-medium"
+                            className="hover:underline font-medium"
+                            style={{ color: 'var(--primary)', textShadow: '0 0 6px rgba(57, 255, 20, 0.3)' }}
                         >
                             Se connecter
                         </Link>
@@ -258,7 +264,7 @@ const Register = () => {
 
                 {/* Footer */}
                 <p className="text-center text-xs text-[var(--text-muted)]" style={{ marginTop: '40px' }}>
-                    En créant un compte, vous contribuez à un web plus responsable
+                    En créant un compte, vous contribuez à un <span style={{ color: 'var(--primary)', textShadow: '0 0 5px rgba(57, 255, 20, 0.3)' }}>web plus responsable</span>
                 </p>
             </div>
         </div>

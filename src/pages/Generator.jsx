@@ -79,7 +79,7 @@ const Generator = () => {
                     <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center">
-                                <Zap className="w-5 h-5 text-[var(--primary)]" />
+                                <Zap className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
                             </div>
                             <div>
                                 <h2 className="font-semibold text-[var(--text-primary)]">Votre Intention</h2>
@@ -144,7 +144,7 @@ const Generator = () => {
                                 className="w-10 h-10 rounded-xl flex items-center justify-center"
                                 style={{ backgroundColor: `${modelInfo.color}20` }}
                             >
-                                <Check className="w-5 h-5" style={{ color: modelInfo.color }} />
+                                <Check className="w-5 h-5" style={{ color: modelInfo.color, filter: `drop-shadow(0 0 4px ${modelInfo.color}80)` }} />
                             </div>
                             <div>
                                 <h2 className="font-semibold text-[var(--text-primary)]">Prompt Optimisé</h2>
@@ -158,7 +158,7 @@ const Generator = () => {
                                 {/* Optimized Prompt */}
                                 <div
                                     className="relative p-4 rounded-xl bg-[var(--bg-secondary)] border-2 transition-all"
-                                    style={{ borderColor: modelInfo.color }}
+                                    style={{ borderColor: modelInfo.color, boxShadow: `0 0 15px ${modelInfo.color}20` }}
                                 >
                                     <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed">
                                         {result.optimized_prompt}
@@ -169,7 +169,7 @@ const Generator = () => {
                                         title="Copier"
                                     >
                                         {copied ? (
-                                            <Check className="w-4 h-4 text-[var(--success)]" />
+                                            <Check className="w-4 h-4" style={{ color: 'var(--success)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
                                         ) : (
                                             <Copy className="w-4 h-4 text-[var(--text-secondary)]" />
                                         )}
@@ -206,7 +206,7 @@ const Generator = () => {
                                     {result.green_data && (
                                         <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
                                             <div className="flex items-center gap-2 mb-4">
-                                                <Leaf className="w-5 h-5 text-[var(--primary)]" />
+                                                <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
                                                 <span className="font-medium text-[var(--text-primary)]">Impact Écologique</span>
                                             </div>
 
@@ -216,19 +216,19 @@ const Generator = () => {
                                             {result.green_data.equivalences && (
                                                 <div className="mt-4 space-y-2">
                                                     <div className="flex items-center gap-2 text-sm">
-                                                        <Smartphone className="w-4 h-4 text-[var(--primary)]" />
+                                                        <Smartphone className="w-4 h-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
                                                         <span className="text-[var(--text-secondary)]">
                                                             {result.green_data.equivalences.smartphone_charges.toFixed(3)} recharges 📱
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2 text-sm">
-                                                        <Car className="w-4 h-4 text-[var(--primary)]" />
+                                                        <Car className="w-4 h-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
                                                         <span className="text-[var(--text-secondary)]">
                                                             {result.green_data.equivalences.km_electric_car.toFixed(3)} m parcourus 🚗
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2 text-sm">
-                                                        <Lightbulb className="w-4 h-4 text-[var(--primary)]" />
+                                                        <Lightbulb className="w-4 h-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
                                                         <span className="text-[var(--text-secondary)]">
                                                             {result.green_data.equivalences.hours_led_bulb.toFixed(3)} h LED 💡
                                                         </span>
@@ -251,7 +251,7 @@ const Generator = () => {
                                     {result.sovereignty_data && (
                                         <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
                                             <div className="flex items-center gap-2 mb-4">
-                                                <Shield className="w-5 h-5 text-[var(--accent)]" />
+                                                <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
                                                 <span className="font-medium text-[var(--text-primary)]">Souveraineté</span>
                                             </div>
 
@@ -284,7 +284,10 @@ const Generator = () => {
                             </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-16 text-center">
-                                <div className="w-20 h-20 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mb-4">
+                                <div
+                                    className="w-20 h-20 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mb-4"
+                                    style={{ boxShadow: '0 0 30px rgba(57, 255, 20, 0.05)' }}
+                                >
                                     <Sparkles className="w-10 h-10 text-[var(--text-muted)]" />
                                 </div>
                                 <h3 className="text-lg font-medium text-[var(--text-secondary)] mb-2">

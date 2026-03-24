@@ -41,7 +41,10 @@ const Login = () => {
             <div className="w-full max-w-lg mb-[20px]">
                 {/* Logo */}
                 <div className="text-center" style={{ marginBottom: '48px' }}>
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4">
+                    <div
+                        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4"
+                        style={{ boxShadow: 'var(--neon-glow-lg)' }}
+                    >
                         <Leaf className="w-8 h-8 text-[var(--bg-primary)]" />
                     </div>
                     <h1 className="text-2xl font-bold gradient-text">PromptOptim</h1>
@@ -117,7 +120,8 @@ const Login = () => {
                         <div className="text-right" style={{ marginTop: '20px' }}>
                             <Link
                                 to="/forgot-password"
-                                className="text-sm text-[var(--primary)] hover:underline"
+                                className="text-sm hover:underline"
+                                style={{ color: 'var(--primary)', textShadow: '0 0 6px rgba(57, 255, 20, 0.3)' }}
                             >
                                 Mot de passe oublié ?
                             </Link>
@@ -147,7 +151,8 @@ const Login = () => {
                         Pas encore de compte ?{' '}
                         <Link
                             to="/register"
-                            className="text-[var(--primary)] hover:underline font-medium"
+                            className="hover:underline font-medium"
+                            style={{ color: 'var(--primary)', textShadow: '0 0 6px rgba(57, 255, 20, 0.3)' }}
                         >
                             Créer un compte
                         </Link>
@@ -156,7 +161,7 @@ const Login = () => {
 
                 {/* Footer */}
                 <p className="text-center text-xs text-[var(--text-muted)]" style={{ marginTop: '40px' }}>
-                    Green IT — Économisez des ressources à chaque prompt
+                    <span style={{ color: 'var(--primary)', textShadow: '0 0 5px rgba(57, 255, 20, 0.3)' }}>Green IT</span> — Économisez des ressources à chaque prompt
                 </p>
             </div>
         </div>

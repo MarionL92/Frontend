@@ -12,6 +12,14 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
         return 'var(--eco-e)';
     };
 
+    const getGlowColor = (s) => {
+        if (s >= 80) return 'rgba(57, 255, 20, 0.5)';
+        if (s >= 60) return 'rgba(160, 255, 0, 0.4)';
+        if (s >= 40) return 'rgba(255, 221, 0, 0.4)';
+        if (s >= 20) return 'rgba(255, 126, 0, 0.4)';
+        return 'rgba(255, 23, 68, 0.4)';
+    };
+
     const getLabel = (s) => {
         if (s >= 80) return 'Excellent';
         if (s >= 60) return 'Bon';
@@ -24,6 +32,16 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
         <div className="flex flex-col items-center">
             <div className="relative" style={{ width: size, height: size }}>
                 <svg width={size} height={size} className="transform -rotate-90">
+                    {/* Glow filter */}
+                    <defs>
+                        <filter id={`neon-glow-${score}`} x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
                     {/* Background circle */}
                     <circle
                         cx={size / 2}
@@ -33,7 +51,7 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
                         stroke="var(--bg-surface)"
                         strokeWidth="10"
                     />
-                    {/* Progress circle */}
+                    {/* Progress circle with neon glow */}
                     <circle
                         cx={size / 2}
                         cy={size / 2}
@@ -45,11 +63,18 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
                         strokeDasharray={circumference}
                         strokeDashoffset={offset}
                         className="transition-all duration-700 ease-out"
+                        filter={`url(#neon-glow-${score})`}
+                        style={{ filter: `drop-shadow(0 0 6px ${getGlowColor(score)})` }}
                     />
                 </svg>
                 {/* Center text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-bold text-[var(--text-primary)]">{score}</span>
+                    <span
+                        className="text-2xl font-bold"
+                        style={{ color: getColor(score), textShadow: `0 0 10px ${getGlowColor(score)}` }}
+                    >
+                        {score}
+                    </span>
                     <span className="text-xs text-[var(--text-secondary)]">/100</span>
                 </div>
             </div>

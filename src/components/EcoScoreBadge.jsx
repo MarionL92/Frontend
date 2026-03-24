@@ -16,6 +16,17 @@ const EcoScoreBadge = ({ score, size = 'md' }) => {
         }
     };
 
+    const getScoreGlow = (s) => {
+        switch (s?.toUpperCase()) {
+            case 'A': return '0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(57, 255, 20, 0.25)';
+            case 'B': return '0 0 10px rgba(160, 255, 0, 0.4), 0 0 20px rgba(160, 255, 0, 0.2)';
+            case 'C': return '0 0 10px rgba(255, 221, 0, 0.4), 0 0 20px rgba(255, 221, 0, 0.2)';
+            case 'D': return '0 0 10px rgba(255, 126, 0, 0.4), 0 0 20px rgba(255, 126, 0, 0.2)';
+            case 'E': return '0 0 10px rgba(255, 23, 68, 0.4), 0 0 20px rgba(255, 23, 68, 0.2)';
+            default: return 'none';
+        }
+    };
+
     const getScoreLabel = (s) => {
         switch (s?.toUpperCase()) {
             case 'A': return 'Excellent';
@@ -30,7 +41,8 @@ const EcoScoreBadge = ({ score, size = 'md' }) => {
     return (
         <div className="flex items-center gap-3">
             <div
-                className={`${sizeClasses[size]} ${getScoreColor(score)} rounded-xl flex items-center justify-center font-bold text-[var(--bg-primary)] shadow-lg`}
+                className={`${sizeClasses[size]} ${getScoreColor(score)} rounded-xl flex items-center justify-center font-bold text-[var(--bg-primary)]`}
+                style={{ boxShadow: getScoreGlow(score) }}
                 title={`Eco-Score: ${score}`}
             >
                 {score || '?'}
