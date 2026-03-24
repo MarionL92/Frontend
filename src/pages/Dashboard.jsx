@@ -147,7 +147,7 @@ const Dashboard = () => {
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
                     >
                         <BarChart3 className="w-7 h-7 text-[var(--bg-primary)]" />
-                        <br></br>
+                        <br></br><br></br><br></br><br></br>
                     </div>
                     <div>
                         <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Dashboard</h1>
@@ -157,12 +157,12 @@ const Dashboard = () => {
 
                 {/* Content */}
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center py-16">
+                    <div className="flex flex-col items-center justify-center min-h-[60vh] py-16">
                         <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57, 255, 20, 0.5))' }} />
                         <p className="text-[var(--text-secondary)]">Chargement des statistiques...</p>
                     </div>
                 ) : error ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="flex flex-col items-center justify-center min-h-[60vh] py-16 text-center">
                         <div className="w-16 h-16 rounded-full bg-[var(--error)]/20 flex items-center justify-center mb-4">
                             <AlertCircle className="w-8 h-8 text-[var(--error)]" />
                         </div>
@@ -315,7 +315,7 @@ const Dashboard = () => {
                                 <Globe className="w-6 h-6" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.5))' }} />
                                 <h3 className="text-xl font-bold text-[var(--text-primary)]">
                                     Votre Impact Environnemental
-                                    <br></br>
+                                    <br></br><br></br><br></br><br></br>
                                 </h3>
                             </div>
 

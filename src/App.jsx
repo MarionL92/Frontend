@@ -36,7 +36,7 @@ const PageLoader = () => (
 function App() {
   return (
     <div className="relative min-h-screen z-0">
-      <div className="fixed inset-0 z-[-1] pointer-events-none">
+      <div className="fixed inset-0 z-[-1] pointer-events-none opacity-30 mix-blend-screen transition-opacity duration-1000">
           <DarkVeil hueShift={120} noiseIntensity={0.03} scanlineIntensity={0.2} speed={0.2} warpAmount={0.04} />
       </div>
       <AuthProvider>

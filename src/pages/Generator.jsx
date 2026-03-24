@@ -91,8 +91,8 @@ const Generator = () => {
             <div className="container">
                 {/* Header */}
                 <div className="text-center" style={{ marginBottom: '2rem' }}>
-                    <h1 className="text-3xl md:text-4xl font-bold" style={{ marginBottom: '1rem' }}>
-                        <span className="gradient-text">Générateur de Prompts</span>
+                    <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wide" style={{ marginBottom: '1rem', textShadow: '0 0 15px rgba(255, 255, 255, 0.3)' }}>
+                        Générateur de Prompts
                     </h1>
                     <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }} className="text-[var(--text-secondary)]">
                         Transformez votre intention en prompt optimisé et mesurez votre impact environnemental.
