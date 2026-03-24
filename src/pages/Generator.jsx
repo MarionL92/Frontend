@@ -52,6 +52,8 @@ const Generator = () => {
     const [error, setError] = useState('');
     const [copied, setCopied] = useState(false);
     const [showReasoning, setShowReasoning] = useState(false);
+    const [showEcoInfo, setShowEcoInfo] = useState(false);
+    const [showSovInfo, setShowSovInfo] = useState(false);
 
     const handleGenerate = async () => {
         if (!inputText.trim()) return;
@@ -232,9 +234,22 @@ const Generator = () => {
                                                 <div className="flex items-center gap-2">
                                                     <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
                                                     <span className="font-semibold text-[var(--text-primary)]">Impact Écologique</span>
+                                                    <button onClick={() => setShowEcoInfo(!showEcoInfo)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors ml-1" title="Comprendre ce score">
+                                                        <Info className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                                 <EcoScoreBadge score={result.green_data.eco_score} size="md" />
                                             </div>
+
+                                            {showEcoInfo && (
+                                                <div className="mb-5 p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)] animate-fade-in text-sm text-[var(--text-secondary)] leading-relaxed relative">
+                                                    <button onClick={() => setShowEcoInfo(false)} className="absolute top-2 right-2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"><X className="w-3 h-3" /></button>
+                                                    <strong className="text-[var(--text-primary)] block mb-1">Pourquoi ce score ?</strong> 
+                                                    L'impact est calculé en comparant le coût énergétique de votre intention initiale avec celui du prompt optimisé, pondéré par l'efficience du modèle choisi.<br/><br/>
+                                                    <strong className="text-[var(--text-primary)] block mb-1 mt-2">Comment l'améliorer ?</strong> 
+                                                    Privilégiez les modèles plus légers pour vos tâches simples et restez le plus concis possible.
+                                                </div>
+                                            )}
 
                                             {/* Key Metrics Row */}
                                             <div className="grid grid-cols-3 gap-3 mb-5">
@@ -304,9 +319,22 @@ const Generator = () => {
                                                 <div className="flex items-center gap-2">
                                                     <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
                                                     <span className="font-semibold text-[var(--text-primary)]">Souveraineté Numérique</span>
+                                                    <button onClick={() => setShowSovInfo(!showSovInfo)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors ml-1" title="Comprendre ce score">
+                                                        <Info className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                                 <SovereigntyGauge score={result.sovereignty_data.score} size={64} />
                                             </div>
+
+                                            {showSovInfo && (
+                                                <div className="mb-5 p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)] animate-fade-in text-sm text-[var(--text-secondary)] leading-relaxed relative">
+                                                    <button onClick={() => setShowSovInfo(false)} className="absolute top-2 right-2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"><X className="w-3 h-3" /></button>
+                                                    <strong className="text-[var(--text-primary)] block mb-1">Comment est-ce calculé ?</strong> 
+                                                    Nous analysons la localisation de l'API (Europe vs US), la licence (Libre vs Propriétaire) et le niveau de soumission aux lois extra-territoriales (ex: Cloud Act US).<br/><br/>
+                                                    <strong className="text-[var(--text-primary)] block mb-1 mt-2">Bonne pratique :</strong> 
+                                                    Pour tout traitement de données personnelles ou sensibles (RGPD), sélectionnez systématiquement un modèle européen (comme Mistral).
+                                                </div>
+                                            )}
 
                                             {/* Details Grid */}
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

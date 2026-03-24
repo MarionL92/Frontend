@@ -65,15 +65,14 @@ const HistoryItem = ({ item, index }) => {
 
     return (
         <div
-            className="animate-fade-in rounded-xl border border-[var(--glass-border)] bg-[var(--bg-surface)] overflow-hidden transition-all duration-200 hover:border-[var(--glass-border-hover)]"
+            className={`animate-fade-in rounded-2xl border border-[var(--glass-border)] bg-[var(--bg-surface)] overflow-hidden neon-hover ${expanded ? 'ring-1 ring-[var(--primary)]/30' : ''}`}
             style={{
-                animationDelay: `${index * 50}ms`,
-                boxShadow: expanded ? '0 4px 24px rgba(0,0,0,0.2)' : 'none'
+                animationDelay: `${index * 50}ms`
             }}
         >
             {/* Header Row — always visible */}
             <div
-                className="flex items-center gap-3 p-4 cursor-pointer select-none"
+                className="flex items-center gap-4 p-5 sm:p-6 cursor-pointer select-none"
                 onClick={() => setExpanded(!expanded)}
             >
                 {/* Left: Model color bar + eco badge */}
@@ -98,23 +97,23 @@ const HistoryItem = ({ item, index }) => {
 
                 {/* Center: Text content */}
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span
-                            className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wide uppercase flex-shrink-0"
+                            className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold tracking-wide uppercase flex-shrink-0"
                             style={{
-                                backgroundColor: `${modelInfo.color}18`,
+                                backgroundColor: `${modelInfo.color}15`,
                                 color: modelInfo.color,
                                 border: `1px solid ${modelInfo.color}30`
                             }}
                         >
                             {modelInfo.name}
                         </span>
-                        <span className="flex items-center gap-1 text-[11px] text-[var(--text-muted)] flex-shrink-0">
-                            <Calendar className="w-3 h-3" />
+                        <span className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)] flex-shrink-0">
+                            <Calendar className="w-3.5 h-3.5" />
                             {formatDate(item.created_at)}
                         </span>
                     </div>
-                    <p className="text-sm text-[var(--text-primary)] leading-snug" style={{
+                    <p className="text-base text-[var(--text-primary)] leading-relaxed" style={{
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
@@ -150,7 +149,7 @@ const HistoryItem = ({ item, index }) => {
 
             {/* Expanded Content */}
             {expanded && (
-                <div className="px-4 pb-4 animate-fade-in" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                <div className="px-5 sm:px-6 pb-6 animate-fade-in" style={{ borderTop: '1px solid var(--glass-border)' }}>
 
                     {/* Optimized Prompt */}
                     <div style={{ marginTop: '1rem' }}>
@@ -168,16 +167,16 @@ const HistoryItem = ({ item, index }) => {
                             </button>
                         </div>
                         <div
-                            className="rounded-lg bg-[var(--bg-secondary)] border-l-3 overflow-hidden"
-                            style={{ borderLeft: `3px solid ${modelInfo.color}` }}
+                            className="rounded-xl bg-[var(--bg-secondary)] border-l-4 overflow-hidden"
+                            style={{ borderLeft: `4px solid ${modelInfo.color}` }}
                         >
                             <pre
-                                className="text-sm text-[var(--text-primary)] p-4 font-mono leading-relaxed"
+                                className="text-base text-[var(--text-primary)] p-5 font-mono leading-relaxed"
                                 style={{
                                     whiteSpace: 'pre-wrap',
                                     wordBreak: 'break-word',
                                     overflowWrap: 'break-word',
-                                    maxHeight: '300px',
+                                    maxHeight: '400px',
                                     overflowY: 'auto',
                                 }}
                             >
@@ -223,12 +222,12 @@ const HistoryItem = ({ item, index }) => {
 
                     {/* AI Reasoning */}
                     {item.ai_reasoning && (
-                        <div className="mt-3 p-3 rounded-lg bg-[var(--info)]/8 border border-[var(--info)]/20">
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                                <Lightbulb className="w-3.5 h-3.5 text-[var(--info)]" />
-                                <h4 className="text-xs font-semibold text-[var(--info)]">Explication de l'IA</h4>
+                        <div className="mt-4 p-4 rounded-xl bg-[var(--info)]/10 border border-[var(--info)]/20">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Lightbulb className="w-4 h-4 text-[var(--info)]" />
+                                <h4 className="text-sm font-semibold text-[var(--info)]">Explication de l'IA</h4>
                             </div>
-                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed" style={{
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed" style={{
                                 wordBreak: 'break-word',
                                 overflowWrap: 'break-word'
                             }}>

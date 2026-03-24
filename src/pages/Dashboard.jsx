@@ -39,7 +39,7 @@ const formatValue = (num, decimals = 4) => {
 };
 
 const StatCard = ({ icon: Icon, label, value, unit, color, subtitle }) => (
-    <div className="glass-card">
+    <div className="glass-card neon-hover">
         <div className="flex items-center gap-2 mb-3">
             <div
                 className="square-icon"
@@ -141,7 +141,7 @@ const Dashboard = () => {
         <Layout>
             <div className="container">
                 {/* Header */}
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-5 mb-10">
                     <div
                         className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
@@ -201,10 +201,10 @@ const Dashboard = () => {
                         </div>
 
                         {/* Charts Row */}
-                        <div className="grid lg:grid-cols-2 gap-6">
+                        <div className="grid lg:grid-cols-2 gap-8">
                             {/* Model Usage Pie Chart */}
-                            <div className="glass-card">
-                                <div className="flex items-center gap-3 mb-4">
+                            <div className="glass-card neon-hover">
+                                <div className="flex items-center gap-3 mb-5">
                                     <PieChart className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
                                         Répartition par modèle
@@ -261,8 +261,8 @@ const Dashboard = () => {
                             </div>
 
                             {/* Bar Chart */}
-                            <div className="glass-card">
-                                <div className="flex items-center gap-3 mb-4">
+                            <div className="glass-card neon-hover">
+                                <div className="flex items-center gap-3 mb-5">
                                     <BarChart3 className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
                                         Utilisation par modèle
@@ -310,35 +310,35 @@ const Dashboard = () => {
 
                         {/* Impact Summary */}
                         <div className="glass-card">
-                            <div className="flex items-center gap-2 mb-5">
-                                <Globe className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
-                                <h3 className="font-semibold text-[var(--text-primary)]">
+                            <div className="flex items-center gap-3 mb-8">
+                                <Globe className="w-6 h-6" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.5))' }} />
+                                <h3 className="text-xl font-bold text-[var(--text-primary)]">
                                     Votre Impact Environnemental
                                 </h3>
                             </div>
 
                             {totalPrompts > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <div className="p-5 lg:p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                    <div className="p-6 lg:p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center neon-hover">
                                         <Smartphone className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.4))' }} />
                                         <p className="text-2xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
                                             {formatValue(equivalences.smartphone, 2)}
                                         </p>
-                                        <p className="text-xs text-[var(--text-muted)] mt-1">recharges smartphone</p>
+                                        <p className="text-sm text-[var(--text-muted)] mt-2">recharges smartphone</p>
                                     </div>
-                                    <div className="p-5 lg:p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                    <div className="p-6 lg:p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center neon-hover">
                                         <Car className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 6px rgba(0, 255, 135, 0.4))' }} />
                                         <p className="text-2xl font-bold" style={{ color: 'var(--accent)', textShadow: '0 0 8px rgba(0, 255, 135, 0.3)' }}>
                                             {formatValue(equivalences.car, 2)}
                                         </p>
-                                        <p className="text-xs text-[var(--text-muted)] mt-1">mètres en voiture électrique</p>
+                                        <p className="text-sm text-[var(--text-muted)] mt-2">mètres en voiture électrique</p>
                                     </div>
-                                    <div className="p-5 lg:p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                    <div className="p-6 lg:p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center neon-hover">
                                         <Lightbulb className="w-8 h-8 mx-auto mb-3" style={{ color: '#ffdd00', filter: 'drop-shadow(0 0 6px rgba(255, 221, 0, 0.4))' }} />
                                         <p className="text-2xl font-bold" style={{ color: '#ffdd00', textShadow: '0 0 8px rgba(255, 221, 0, 0.3)' }}>
                                             {formatValue(equivalences.led, 2)}
                                         </p>
-                                        <p className="text-xs text-[var(--text-muted)] mt-1">heures d'éclairage LED</p>
+                                        <p className="text-sm text-[var(--text-muted)] mt-2">heures d'éclairage LED</p>
                                     </div>
                                 </div>
                             ) : (
