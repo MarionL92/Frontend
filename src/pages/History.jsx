@@ -269,10 +269,10 @@ const History = () => {
         <Layout>
             <div className="container" style={{ maxWidth: '800px' }}>
                 {/* Header */}
-                <div className="flex items-center justify-between" style={{ marginBottom: '1.5rem' }}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ marginBottom: '1.5rem' }}>
                     <div className="flex items-center gap-4">
                         <div
-                            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
+                            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
                             style={{ boxShadow: 'var(--neon-glow-md)' }}
                         >
                             <HistoryIcon className="w-7 h-7 text-[var(--bg-primary)]" />
@@ -283,9 +283,9 @@ const History = () => {
                         </div>
                     </div>
                     {history.length > 0 && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                            <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--primary)' }} />
-                            <span className="text-sm font-medium text-[var(--text-secondary)]">
+                        <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--bg-surface)] border border-[var(--glass-border)] self-start sm:self-auto flex-shrink-0 shadow-sm">
+                            <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                            <span className="text-base font-semibold text-[var(--text-primary)] whitespace-nowrap">
                                 {history.length} prompt{history.length > 1 ? 's' : ''}
                             </span>
                         </div>

@@ -49,7 +49,7 @@ const Layout = ({ children }) => {
                             >
                                 <Leaf className="w-6 h-6 text-[var(--bg-primary)]" />
                             </div>
-                            <span className="text-xl font-bold gradient-text hidden sm:block">
+                            <span className="text-xl font-bold text-white tracking-wide" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.3)' }}>
                                 PromptOptim
                             </span>
                         </Link>
