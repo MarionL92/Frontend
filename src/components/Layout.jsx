@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
     return (
         <div className="bg-[var(--bg-primary)]">
             {/* Header */}
-            <header className="fixed top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[95%] md:max-w-6xl z-50 glass-card border border-[var(--glass-border)] rounded-2xl animate-neon-border">
+            <header className="fixed top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[95%] md:max-w-6xl z-50 glass-card border border-[var(--glass-border)] rounded-2xl animate-neon-border" style={{ borderBottomWidth: '2px', borderBottomColor: 'rgba(57, 255, 20, 0.35)' }}>
                 <div className="container flex items-center justify-between h-16 px-6">
                     <div className="flex items-center gap-8 md:gap-[201px]">
                         {/* Logo */}
@@ -52,22 +52,25 @@ const Layout = ({ children }) => {
 
                         {/* Desktop Navigation */}
                         {isAuthenticated && (
-                            <nav className="hidden md:flex items-center gap-6">
+                            <nav className="hidden md:flex items-center gap-4">
                                 {navItems.map((item) => (
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${isActive(item.path)
-                                            ? 'text-[var(--bg-primary)] font-semibold'
+                                        className={`flex items-center gap-2.5 rounded-xl transition-all ${isActive(item.path)
+                                            ? 'text-[var(--bg-primary)] font-bold'
                                             : 'text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--bg-surface)]'
                                             }`}
                                         style={isActive(item.path) ? {
                                             background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-                                            boxShadow: 'var(--neon-glow-sm)'
-                                        } : {}}
+                                            boxShadow: '0 0 12px rgba(57, 255, 20, 0.5), 0 0 24px rgba(57, 255, 20, 0.25)',
+                                            padding: '0.6rem 1.5rem',
+                                        } : {
+                                            padding: '0.5rem 1.25rem',
+                                        }}
                                     >
-                                        <item.icon className="w-4 h-4" />
-                                        <span className="text-sm font-medium">{item.label}</span>
+                                        <item.icon className={isActive(item.path) ? 'w-5 h-5' : 'w-4 h-4'} />
+                                        <span className={isActive(item.path) ? 'text-base font-semibold' : 'text-sm font-medium'}>{item.label}</span>
                                     </Link>
                                 ))}
                             </nav>

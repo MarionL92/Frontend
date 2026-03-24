@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { promptAPI } from '../services/api';
 import Layout from '../components/Layout';
-import EcoScoreBadge from '../components/EcoScoreBadge';
 import { getModelInfo } from '../components/ModelSelector';
 import {
     History as HistoryIcon,
@@ -13,16 +12,38 @@ import {
     Copy,
     Check,
     Leaf,
-    Globe,
-    Lightbulb
+    Lightbulb,
+    Shield,
+    BatteryCharging,
+    Sparkles
 } from 'lucide-react';
 
-const HistoryItem = ({ item }) => {
+// Eco score color helper
+const getEcoColor = (score) => {
+    switch (score?.toUpperCase()) {
+        case 'A': return 'var(--eco-a)';
+        case 'B': return 'var(--eco-b)';
+        case 'C': return 'var(--eco-c)';
+        case 'D': return 'var(--eco-d)';
+        case 'E': return 'var(--eco-e)';
+        default: return 'var(--text-muted)';
+    }
+};
+
+const formatSmallNumber = (num) => {
+    if (num === null || num === undefined) return '—';
+    if (num === 0) return '0';
+    if (Math.abs(num) < 0.0001) return '< 0.0001';
+    return num.toFixed(4).replace(/\.?0+$/, '') || '0';
+};
+
+const HistoryItem = ({ item, index }) => {
     const [expanded, setExpanded] = useState(false);
     const [copied, setCopied] = useState(false);
     const modelInfo = getModelInfo(item.target_model);
 
-    const handleCopy = async () => {
+    const handleCopy = async (e) => {
+        e.stopPropagation();
         await navigator.clipboard.writeText(item.optimized_prompt);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -39,121 +60,180 @@ const HistoryItem = ({ item }) => {
         });
     };
 
-    const getEcoGlow = (score) => {
-        switch (score?.toUpperCase()) {
-            case 'A': return '0 0 8px rgba(57, 255, 20, 0.4)';
-            case 'B': return '0 0 8px rgba(160, 255, 0, 0.3)';
-            case 'C': return '0 0 8px rgba(255, 221, 0, 0.3)';
-            case 'D': return '0 0 8px rgba(255, 126, 0, 0.3)';
-            case 'E': return '0 0 8px rgba(255, 23, 68, 0.3)';
-            default: return 'none';
-        }
-    };
+    const ecoScore = item.green_data?.eco_score;
+    const sovereigntyScore = item.sovereignty_data?.score;
 
     return (
-        <div className="glass-card p-4 animate-fade-in">
+        <div
+            className="animate-fade-in rounded-xl border border-[var(--glass-border)] bg-[var(--bg-surface)] overflow-hidden transition-all duration-200 hover:border-[var(--glass-border-hover)]"
+            style={{
+                animationDelay: `${index * 50}ms`,
+                boxShadow: expanded ? '0 4px 24px rgba(0,0,0,0.2)' : 'none'
+            }}
+        >
+            {/* Header Row — always visible */}
             <div
-                className="flex items-start justify-between gap-4 cursor-pointer"
+                className="flex items-center gap-3 p-4 cursor-pointer select-none"
                 onClick={() => setExpanded(!expanded)}
             >
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                        <span
-                            className="px-2 py-0.5 rounded text-xs font-medium"
+                {/* Left: Model color bar + eco badge */}
+                <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
+                    {ecoScore && (
+                        <div
+                            className="w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center text-[var(--bg-primary)]"
                             style={{
-                                backgroundColor: `${modelInfo.color}20`,
-                                color: modelInfo.color
+                                backgroundColor: getEcoColor(ecoScore),
+                                boxShadow: `0 0 8px ${getEcoColor(ecoScore)}50`
+                            }}
+                        >
+                            {ecoScore}
+                        </div>
+                    )}
+                    {sovereigntyScore !== undefined && (
+                        <span className="text-[10px] font-medium" style={{ color: sovereigntyScore >= 60 ? 'var(--eco-a)' : sovereigntyScore >= 30 ? 'var(--eco-c)' : 'var(--eco-e)' }}>
+                            {sovereigntyScore}%
+                        </span>
+                    )}
+                </div>
+
+                {/* Center: Text content */}
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span
+                            className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wide uppercase flex-shrink-0"
+                            style={{
+                                backgroundColor: `${modelInfo.color}18`,
+                                color: modelInfo.color,
+                                border: `1px solid ${modelInfo.color}30`
                             }}
                         >
                             {modelInfo.name}
                         </span>
-                        {item.green_data && (
-                            <div
-                                className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center text-[var(--bg-primary)] ${item.green_data.eco_score === 'A' ? 'bg-[var(--eco-a)]' :
-                                    item.green_data.eco_score === 'B' ? 'bg-[var(--eco-b)]' :
-                                        item.green_data.eco_score === 'C' ? 'bg-[var(--eco-c)]' :
-                                            item.green_data.eco_score === 'D' ? 'bg-[var(--eco-d)]' :
-                                                'bg-[var(--eco-e)]'
-                                    }`}
-                                style={{ boxShadow: getEcoGlow(item.green_data.eco_score) }}
-                            >
-                                {item.green_data.eco_score}
-                            </div>
-                        )}
+                        <span className="flex items-center gap-1 text-[11px] text-[var(--text-muted)] flex-shrink-0">
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(item.created_at)}
+                        </span>
                     </div>
-                    <p className="text-sm text-[var(--text-primary)] line-clamp-2">
+                    <p className="text-sm text-[var(--text-primary)] leading-snug" style={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        wordBreak: 'break-word'
+                    }}>
                         {item.original_intent}
                     </p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-[var(--text-muted)]">
-                        <Calendar className="w-3 h-3" />
-                        <span>{formatDate(item.created_at)}</span>
+                </div>
+
+                {/* Right: Actions */}
+                <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                        onClick={handleCopy}
+                        className="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
+                        title="Copier le prompt optimisé"
+                    >
+                        {copied ? (
+                            <Check className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                        ) : (
+                            <Copy className="w-4 h-4 text-[var(--text-muted)]" />
+                        )}
+                    </button>
+                    <div className="p-2 rounded-lg">
+                        {expanded ? (
+                            <ChevronUp className="w-4 h-4 text-[var(--text-muted)]" />
+                        ) : (
+                            <ChevronDown className="w-4 h-4 text-[var(--text-muted)]" />
+                        )}
                     </div>
                 </div>
-                <button className="p-2 rounded-lg hover:bg-[var(--bg-surface)] transition-colors">
-                    {expanded ? (
-                        <ChevronUp className="w-5 h-5 text-[var(--text-muted)]" />
-                    ) : (
-                        <ChevronDown className="w-5 h-5 text-[var(--text-muted)]" />
-                    )}
-                </button>
             </div>
 
+            {/* Expanded Content */}
             {expanded && (
-                <div className="mt-4 pt-4 border-t border-[var(--glass-border)] space-y-4 animate-fade-in">
-                    {/* Original Intent */}
-                    <div>
-                        <h4 className="text-xs font-medium text-[var(--text-muted)] mb-2">Intention originale</h4>
-                        <p className="text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] p-3 rounded-lg">
-                            {item.original_intent}
-                        </p>
-                    </div>
+                <div className="px-4 pb-4 animate-fade-in" style={{ borderTop: '1px solid var(--glass-border)' }}>
 
                     {/* Optimized Prompt */}
-                    <div>
+                    <div style={{ marginTop: '1rem' }}>
                         <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-xs font-medium text-[var(--text-muted)]">Prompt optimisé</h4>
+                            <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                                Prompt optimisé
+                            </h4>
                             <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleCopy();
-                                }}
-                                className="flex items-center gap-1 text-xs hover:underline"
-                                style={{ color: 'var(--primary)', textShadow: '0 0 5px rgba(57, 255, 20, 0.3)' }}
+                                onClick={handleCopy}
+                                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-colors hover:bg-[var(--primary)]/10"
+                                style={{ color: 'var(--primary)' }}
                             >
                                 {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                                 {copied ? 'Copié !' : 'Copier'}
                             </button>
                         </div>
-                        <pre
-                            className="text-sm text-[var(--text-primary)] bg-[var(--bg-secondary)] p-3 rounded-lg whitespace-pre-wrap font-mono border-l-4"
-                            style={{ borderColor: modelInfo.color, boxShadow: `inset 4px 0 10px -4px ${modelInfo.color}30` }}
+                        <div
+                            className="rounded-lg bg-[var(--bg-secondary)] border-l-3 overflow-hidden"
+                            style={{ borderLeft: `3px solid ${modelInfo.color}` }}
                         >
-                            {item.optimized_prompt}
-                        </pre>
+                            <pre
+                                className="text-sm text-[var(--text-primary)] p-4 font-mono leading-relaxed"
+                                style={{
+                                    whiteSpace: 'pre-wrap',
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    maxHeight: '300px',
+                                    overflowY: 'auto',
+                                }}
+                            >
+                                {item.optimized_prompt}
+                            </pre>
+                        </div>
                     </div>
 
-                    {/* Green Data */}
-                    {item.green_data && (
-                        <div className="flex flex-wrap gap-4 text-xs">
-                            <div className="flex items-center gap-1 text-[var(--text-muted)]">
-                                <Leaf className="w-3 h-3" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
-                                <span>{item.green_data.tokens_saved} tokens économisés</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-[var(--text-muted)]">
-                                <Globe className="w-3 h-3" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 3px rgba(0, 255, 135, 0.4))' }} />
-                                <span>{item.green_data.co2_saved_g.toFixed(4)} g CO₂</span>
-                            </div>
+                    {/* Metrics Row */}
+                    {(item.green_data || item.sovereignty_data) && (
+                        <div className="flex flex-wrap gap-2 mt-3">
+                            {item.green_data?.tokens_saved !== undefined && (
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg-secondary)] text-xs">
+                                    <BatteryCharging className="w-3 h-3" style={{ color: 'var(--primary)' }} />
+                                    <span className="text-[var(--text-secondary)]">
+                                        <strong className="text-[var(--text-primary)]">{item.green_data.tokens_saved}</strong> tokens
+                                    </span>
+                                </div>
+                            )}
+                            {item.green_data?.co2_saved_g !== undefined && (
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg-secondary)] text-xs">
+                                    <Leaf className="w-3 h-3" style={{ color: 'var(--eco-b)' }} />
+                                    <span className="text-[var(--text-secondary)]">
+                                        <strong className="text-[var(--text-primary)]">{formatSmallNumber(item.green_data.co2_saved_g)}</strong> g CO₂
+                                    </span>
+                                </div>
+                            )}
+                            {item.sovereignty_data && (
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg-secondary)] text-xs">
+                                    <Shield className="w-3 h-3" style={{ color: sovereigntyScore >= 60 ? 'var(--eco-a)' : sovereigntyScore >= 30 ? 'var(--eco-c)' : 'var(--eco-e)' }} />
+                                    <span className="text-[var(--text-secondary)]">
+                                        <strong className="text-[var(--text-primary)]">{sovereigntyScore}/100</strong> souveraineté
+                                    </span>
+                                </div>
+                            )}
+                            {item.sovereignty_data?.location && (
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg-secondary)] text-xs">
+                                    <span className="text-[var(--text-secondary)]">📍 {item.sovereignty_data.location}</span>
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* AI Reasoning */}
                     {item.ai_reasoning && (
-                        <div className="p-3 rounded-lg bg-[var(--info)]/10 border border-[var(--info)]/30">
-                            <div className="flex items-center gap-1 mb-1">
-                                <Lightbulb className="w-3 h-3 text-[var(--info)]" />
-                                <h4 className="text-xs font-medium text-[var(--info)]">Explication de l'IA</h4>
+                        <div className="mt-3 p-3 rounded-lg bg-[var(--info)]/8 border border-[var(--info)]/20">
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                                <Lightbulb className="w-3.5 h-3.5 text-[var(--info)]" />
+                                <h4 className="text-xs font-semibold text-[var(--info)]">Explication de l'IA</h4>
                             </div>
-                            <p className="text-xs text-[var(--text-secondary)]">{item.ai_reasoning}</p>
+                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed" style={{
+                                wordBreak: 'break-word',
+                                overflowWrap: 'break-word'
+                            }}>
+                                {item.ai_reasoning}
+                            </p>
                         </div>
                     )}
                 </div>
@@ -188,19 +268,29 @@ const History = () => {
 
     return (
         <Layout>
-            <div className="container max-w-3xl">
+            <div className="container" style={{ maxWidth: '800px' }}>
                 {/* Header */}
-                <div className="flex items-center gap-4" style={{ marginBottom: '1rem' }}>
-                    <div
-                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
-                        style={{ boxShadow: 'var(--neon-glow-md)' }}
-                    >
-                        <HistoryIcon className="w-7 h-7 text-[var(--bg-primary)]" />
+                <div className="flex items-center justify-between" style={{ marginBottom: '1.5rem' }}>
+                    <div className="flex items-center gap-4">
+                        <div
+                            className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
+                            style={{ boxShadow: 'var(--neon-glow-md)' }}
+                        >
+                            <HistoryIcon className="w-7 h-7 text-[var(--bg-primary)]" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Historique</h1>
+                            <p className="text-[var(--text-secondary)]">Vos prompts optimisés précédents</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Historique</h1>
-                        <p className="text-[var(--text-secondary)]">Vos prompts optimisés précédents</p>
-                    </div>
+                    {history.length > 0 && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--glass-border)]">
+                            <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--primary)' }} />
+                            <span className="text-sm font-medium text-[var(--text-secondary)]">
+                                {history.length} prompt{history.length > 1 ? 's' : ''}
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Content */}
@@ -217,24 +307,24 @@ const History = () => {
                         <p className="text-[var(--text-secondary)]">{error}</p>
                     </div>
                 ) : history.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center text-center" style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
-                        <div className="w-12 h-12 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mb-2">
-                            <HistoryIcon className="w-6 h-6 text-[var(--text-muted)]" />
+                    <div className="flex flex-col items-center justify-center text-center py-16">
+                        <div
+                            className="w-20 h-20 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mb-4"
+                            style={{ boxShadow: '0 0 30px rgba(57, 255, 20, 0.05)' }}
+                        >
+                            <HistoryIcon className="w-10 h-10 text-[var(--text-muted)]" />
                         </div>
                         <h3 className="text-lg font-medium text-[var(--text-secondary)] mb-2">
                             Aucun historique
                         </h3>
-                        <p className="text-sm text-[var(--text-muted)]">
+                        <p className="text-sm text-[var(--text-muted)] max-w-xs">
                             Commencez à générer des prompts pour voir votre historique ici
                         </p>
                     </div>
                 ) : (
-                    <div className="space-y-4">
-                        <p className="text-sm text-[var(--text-muted)]">
-                            {history.length} prompt{history.length > 1 ? 's' : ''} généré{history.length > 1 ? 's' : ''}
-                        </p>
-                        {history.map((item) => (
-                            <HistoryItem key={item.id} item={item} />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {history.map((item, index) => (
+                            <HistoryItem key={item.id} item={item} index={index} />
                         ))}
                     </div>
                 )}

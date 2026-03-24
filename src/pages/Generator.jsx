@@ -162,7 +162,7 @@ const Generator = () => {
                     </div>
 
                     {/* RIGHT: Output Section */}
-                    <div className="glass-card p-4 space-y-5">
+                    <div className="glass-card space-y-5" style={{ padding: '1.5rem' }}>
                         <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem' }}>
                             <div
                                 className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -178,15 +178,13 @@ const Generator = () => {
 
                         {/* Output Display */}
                         {result ? (
-                            <div className="animate-fade-in space-y-6">
+                            <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 {/* Optimized Prompt */}
                                 <div
-                                    className="relative p-4 rounded-xl bg-[var(--bg-secondary)] border-2 transition-all"
-                                    style={{ borderColor: modelInfo.color, boxShadow: `0 0 15px ${modelInfo.color}20` }}
+                                    className="relative rounded-xl bg-[var(--bg-secondary)] border-2 transition-all"
+                                    style={{ borderColor: modelInfo.color, boxShadow: `0 0 15px ${modelInfo.color}20`, padding: '1.25rem' }}
                                 >
-                                    <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed pr-10">
-                                        {result.optimized_prompt}
-                                    </pre>
+                                    <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed" style={{ paddingRight: '2.5rem', wordBreak: 'break-word', overflowWrap: 'break-word', maxHeight: '400px', overflowY: 'auto', margin: 0 }}>{result.optimized_prompt}</pre>
                                     <button
                                         onClick={handleCopy}
                                         className="absolute top-3 right-3 p-2 rounded-lg bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] transition-colors"
@@ -225,11 +223,11 @@ const Generator = () => {
                                 )}
 
                                 {/* Scores Section - Full Width Cards */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
                                     {/* ===== GREEN / ECO CARD ===== */}
                                     {result.green_data && (
-                                        <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]" style={{ padding: '1.5rem' }}>
                                             <div className="flex items-center justify-between mb-5">
                                                 <div className="flex items-center gap-2">
                                                     <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
@@ -239,53 +237,53 @@ const Generator = () => {
                                             </div>
 
                                             {/* Key Metrics Row */}
-                                            <div className="grid grid-cols-3 gap-3 mb-4">
-                                                <div className="text-center p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                                                    <BatteryCharging className="w-4 h-4 mx-auto mb-1" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
-                                                    <p className="text-lg font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
+                                            <div className="grid grid-cols-3" style={{ gap: '0.75rem', marginBottom: '1.25rem' }}>
+                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]" style={{ padding: '1rem 0.75rem' }}>
+                                                    <BatteryCharging className="w-5 h-5 mx-auto" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))', marginBottom: '0.5rem' }} />
+                                                    <p className="text-xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)', lineHeight: 1.2 }}>
                                                         {result.green_data.tokens_saved || 0}
                                                     </p>
-                                                    <p className="text-[10px] text-[var(--text-muted)] leading-tight">tokens économisés</p>
+                                                    <p className="text-xs text-[var(--text-muted)]" style={{ marginTop: '0.35rem' }}>tokens économisés</p>
                                                 </div>
-                                                <div className="text-center p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                                                    <Leaf className="w-4 h-4 mx-auto mb-1" style={{ color: 'var(--eco-b)', filter: 'drop-shadow(0 0 3px rgba(160, 255, 0, 0.4))' }} />
-                                                    <p className="text-lg font-bold" style={{ color: 'var(--eco-b)', textShadow: '0 0 8px rgba(160, 255, 0, 0.3)' }}>
+                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]" style={{ padding: '1rem 0.75rem' }}>
+                                                    <Leaf className="w-5 h-5 mx-auto" style={{ color: 'var(--eco-b)', filter: 'drop-shadow(0 0 3px rgba(160, 255, 0, 0.4))', marginBottom: '0.5rem' }} />
+                                                    <p className="text-xl font-bold" style={{ color: 'var(--eco-b)', textShadow: '0 0 8px rgba(160, 255, 0, 0.3)', lineHeight: 1.2 }}>
                                                         {formatSmallNumber(result.green_data.co2_saved_g)}
                                                     </p>
-                                                    <p className="text-[10px] text-[var(--text-muted)] leading-tight">g CO₂ évités</p>
+                                                    <p className="text-xs text-[var(--text-muted)]" style={{ marginTop: '0.35rem' }}>g CO₂ évités</p>
                                                 </div>
-                                                <div className="text-center p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                                                    <Droplets className="w-4 h-4 mx-auto mb-1" style={{ color: '#60a5fa', filter: 'drop-shadow(0 0 3px rgba(96, 165, 250, 0.4))' }} />
-                                                    <p className="text-lg font-bold" style={{ color: '#60a5fa', textShadow: '0 0 8px rgba(96, 165, 250, 0.3)' }}>
+                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]" style={{ padding: '1rem 0.75rem' }}>
+                                                    <Droplets className="w-5 h-5 mx-auto" style={{ color: '#60a5fa', filter: 'drop-shadow(0 0 3px rgba(96, 165, 250, 0.4))', marginBottom: '0.5rem' }} />
+                                                    <p className="text-xl font-bold" style={{ color: '#60a5fa', textShadow: '0 0 8px rgba(96, 165, 250, 0.3)', lineHeight: 1.2 }}>
                                                         {formatSmallNumber(result.green_data.water_saved_ml)}
                                                     </p>
-                                                    <p className="text-[10px] text-[var(--text-muted)] leading-tight">mL eau épargnés</p>
+                                                    <p className="text-xs text-[var(--text-muted)]" style={{ marginTop: '0.35rem' }}>mL eau épargnés</p>
                                                 </div>
                                             </div>
 
                                             {/* Equivalences Row */}
                                             {result.green_data.equivalences && (
-                                                <div className="grid grid-cols-3 gap-3 pt-3 border-t border-[var(--glass-border)]">
-                                                    <div className="flex flex-col items-center gap-1 text-center">
-                                                        <Smartphone className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                                                        <span className="text-sm font-medium text-[var(--text-primary)]">
+                                                <div className="grid grid-cols-3" style={{ gap: '0.75rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+                                                    <div className="flex flex-col items-center text-center" style={{ gap: '0.35rem' }}>
+                                                        <Smartphone className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
+                                                        <span className="text-base font-semibold text-[var(--text-primary)]">
                                                             {formatEquivalence(result.green_data.equivalences.smartphone_charges)}
                                                         </span>
-                                                        <span className="text-[10px] text-[var(--text-muted)]">recharges</span>
+                                                        <span className="text-xs text-[var(--text-muted)]">recharges</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center gap-1 text-center">
-                                                        <Car className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                                                        <span className="text-sm font-medium text-[var(--text-primary)]">
+                                                    <div className="flex flex-col items-center text-center" style={{ gap: '0.35rem' }}>
+                                                        <Car className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
+                                                        <span className="text-base font-semibold text-[var(--text-primary)]">
                                                             {formatEquivalence(result.green_data.equivalences.km_electric_car)}
                                                         </span>
-                                                        <span className="text-[10px] text-[var(--text-muted)]">km en VE</span>
+                                                        <span className="text-xs text-[var(--text-muted)]">km en VE</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center gap-1 text-center">
-                                                        <Lightbulb className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                                                        <span className="text-sm font-medium text-[var(--text-primary)]">
+                                                    <div className="flex flex-col items-center text-center" style={{ gap: '0.35rem' }}>
+                                                        <Lightbulb className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
+                                                        <span className="text-base font-semibold text-[var(--text-primary)]">
                                                             {formatEquivalence(result.green_data.equivalences.hours_led_bulb)}
                                                         </span>
-                                                        <span className="text-[10px] text-[var(--text-muted)]">h LED</span>
+                                                        <span className="text-xs text-[var(--text-muted)]">h LED</span>
                                                     </div>
                                                 </div>
                                             )}
@@ -301,7 +299,7 @@ const Generator = () => {
 
                                     {/* ===== SOVEREIGNTY CARD ===== */}
                                     {result.sovereignty_data && (
-                                        <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]" style={{ padding: '1.5rem' }}>
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-2">
                                                     <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
@@ -311,7 +309,7 @@ const Generator = () => {
                                             </div>
 
                                             {/* Details Grid */}
-                                            <div className="space-y-2.5">
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                                 <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
                                                     <MapPin className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
                                                     <div className="flex justify-between flex-1 min-w-0">
@@ -335,7 +333,7 @@ const Generator = () => {
                                                 </div>
 
                                                 {/* Cloud Act Risk / RGPD badges */}
-                                                <div className="flex gap-2 mt-1">
+                                                <div className="flex flex-wrap gap-2" style={{ marginTop: '0.5rem' }}>
                                                     {result.sovereignty_data.cloud_act_risk ? (
                                                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/30">
                                                             <ShieldAlert className="w-3.5 h-3.5 text-[var(--error)]" />
