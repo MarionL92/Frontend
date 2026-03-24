@@ -1,0 +1,392 @@
+@import "tailwindcss";
+
+/* ================================
+   PROMPTOPTIM - GREEN IT DESIGN SYSTEM
+   ================================ */
+
+/* Custom CSS Variables */
+:root {
+  /* Background Colors - Dark Mode Eco-Friendly */
+  --bg-primary: #0a0f0d;
+  --bg-secondary: #111916;
+  --bg-surface: #1a2420;
+  --bg-surface-hover: #243029;
+
+  /* Glassmorphism */
+  --glass-bg: rgba(26, 36, 32, 0.7);
+  --glass-border: rgba(16, 185, 129, 0.2);
+
+  /* Primary Colors - Emerald/Teal for Green IT */
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-light: #34d399;
+  --accent: #14b8a6;
+
+  /* Text Colors */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Eco Score Colors */
+  --eco-a: #22c55e;
+  --eco-b: #84cc16;
+  --eco-c: #eab308;
+  --eco-d: #f97316;
+  --eco-e: #ef4444;
+
+  /* Model Colors */
+  --model-mistral: #ff7e00;
+  --model-gpt: #74aa9c;
+  --model-claude: #cc785c;
+  --model-gemini: #4285f4;
+  --model-midjourney: #9c5cd4;
+
+  /* Status Colors */
+  --success: #22c55e;
+  --warning: #eab308;
+  --error: #ef4444;
+  --info: #3b82f6;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: var(--bg-primary);
+}
+
+/* Focus Styles for Accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+
+/* Glass Card Effect */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button Base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  color: var(--bg-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+}
+
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-surface-hover);
+  border-color: var(--primary);
+}
+
+/* Input Styles */
+.input-field {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+/* Input with left icon */
+.input-field.has-icon-left {
+  padding-left: 2.75rem;
+}
+
+/* Input with right icon */
+.input-field.has-icon-right {
+  padding-right: 2.75rem;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.input-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Labels */
+.input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Error Text */
+.error-text {
+  font-size: 0.75rem;
+  color: var(--error);
+  margin-top: 0.25rem;
+}
+
+/* Success Text */
+.success-text {
+  font-size: 0.75rem;
+  color: var(--success);
+  margin-top: 0.25rem;
+}
+
+/* ================================
+   ECO SCORE BADGES
+   ================================ */
+
+.eco-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 8px;
+  color: var(--bg-primary);
+}
+
+.eco-badge-a {
+  background: var(--eco-a);
+}
+
+.eco-badge-b {
+  background: var(--eco-b);
+}
+
+.eco-badge-c {
+  background: var(--eco-c);
+}
+
+.eco-badge-d {
+  background: var(--eco-d);
+}
+
+.eco-badge-e {
+  background: var(--eco-e);
+}
+
+/* ================================
+   MODEL COLORS
+   ================================ */
+
+.model-border-mistral {
+  border-color: var(--model-mistral) !important;
+}
+
+.model-border-gpt {
+  border-color: var(--model-gpt) !important;
+}
+
+.model-border-claude {
+  border-color: var(--model-claude) !important;
+}
+
+.model-border-gemini {
+  border-color: var(--model-gemini) !important;
+}
+
+.model-border-midjourney {
+  border-color: var(--model-midjourney) !important;
+}
+
+.model-bg-mistral {
+  background-color: var(--model-mistral);
+}
+
+.model-bg-gpt {
+  background-color: var(--model-gpt);
+}
+
+.model-bg-claude {
+  background-color: var(--model-claude);
+}
+
+.model-bg-gemini {
+  background-color: var(--model-gemini);
+}
+
+.model-bg-midjourney {
+  background-color: var(--model-midjourney);
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.5);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ================================
+   RESPONSIVE UTILITIES
+   ================================ */
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
