@@ -147,6 +147,7 @@ const Dashboard = () => {
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
                     >
                         <BarChart3 className="w-7 h-7 text-[var(--bg-primary)]" />
+                        <br></br>
                     </div>
                     <div>
                         <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Dashboard</h1>
@@ -314,6 +315,7 @@ const Dashboard = () => {
                                 <Globe className="w-6 h-6" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.5))' }} />
                                 <h3 className="text-xl font-bold text-[var(--text-primary)]">
                                     Votre Impact Environnemental
+                                    <br></br>
                                 </h3>
                             </div>
 
