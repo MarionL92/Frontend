@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Leaf, Lock, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
@@ -15,9 +15,18 @@ const passwordRules = [
 ];
 
 const ResetPassword = () => {
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const token = searchParams.get('token');
+
+    // V5: Supabase redirects with tokens in the URL hash fragment
+    // e.g. /reset-password#access_token=...&refresh_token=...
+    const hashParams = useMemo(() => {
+        const hash = window.location.hash.substring(1); // remove the #
+        return new URLSearchParams(hash);
+    }, []);
+
+    const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
+    const hasTokens = Boolean(accessToken && refreshToken);
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,10 +42,10 @@ const ResetPassword = () => {
     const passwordsMatch = password === confirmPassword && confirmPassword.length > 0;
 
     useEffect(() => {
-        if (!token) {
-            setError('Token de réinitialisation manquant ou invalide.');
+        if (!hasTokens) {
+            setError('Lien de réinitialisation invalide ou expiré.');
         }
-    }, [token]);
+    }, [hasTokens]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -54,7 +63,8 @@ const ResetPassword = () => {
 
         setIsSubmitting(true);
 
-        const result = await resetPassword(token, password);
+        // V5: send access_token + refresh_token + new_password
+        const result = await resetPassword(accessToken, refreshToken, password);
 
         if (result.success) {
             setSuccess(true);
@@ -138,7 +148,7 @@ const ResetPassword = () => {
                                     className="input-field has-icon-left has-icon-right"
                                     required
                                     autoComplete="new-password"
-                                    disabled={!token}
+                                    disabled={!hasTokens}
                                 />
                                 <button
                                     type="button"
@@ -193,7 +203,7 @@ const ResetPassword = () => {
                                     style={confirmPassword.length > 0 && passwordsMatch ? { boxShadow: '0 0 8px rgba(57, 255, 20, 0.2)' } : {}}
                                     required
                                     autoComplete="new-password"
-                                    disabled={!token}
+                                    disabled={!hasTokens}
                                 />
                                 <button
                                     type="button"
@@ -211,7 +221,7 @@ const ResetPassword = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            disabled={isSubmitting || !isPasswordValid || !passwordsMatch || !token}
+                            disabled={isSubmitting || !isPasswordValid || !passwordsMatch || !hasTokens}
                             className="btn btn-primary w-full"
                         >
                             {isSubmitting ? (

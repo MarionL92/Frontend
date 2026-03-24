@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const refreshToken = localStorage.getItem('refresh_token');
         if (refreshToken) {
-            // Try to restore session
             restoreSession();
         } else {
             setIsLoading(false);
@@ -36,8 +35,8 @@ export const AuthProvider = ({ children }) => {
                 return;
             }
 
-            // Attempt to refresh the token
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/refresh`, {
+            // V5: /auth/refresh
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/refresh`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refresh_token: refreshToken }),
@@ -48,9 +47,22 @@ export const AuthProvider = ({ children }) => {
                 setAccessToken(data.access_token);
                 localStorage.setItem('refresh_token', data.refresh_token);
                 setIsAuthenticated(true);
-                setUser({ authenticated: true });
+
+                // Fetch user info with the new token
+                try {
+                    const meResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${data.access_token}` },
+                    });
+                    if (meResponse.ok) {
+                        const userData = await meResponse.json();
+                        setUser({ email: userData.email, id: userData.id, authenticated: true });
+                    } else {
+                        setUser({ authenticated: true });
+                    }
+                } catch {
+                    setUser({ authenticated: true });
+                }
             } else {
-                // Refresh failed, clear tokens
                 clearTokens();
                 setIsAuthenticated(false);
                 setUser(null);
@@ -70,6 +82,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
 
         try {
+            // V5: JSON login with email field, returns user object
             const data = await authAPI.login(email, password);
 
             // Store tokens
@@ -77,11 +90,23 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('refresh_token', data.refresh_token);
 
             setIsAuthenticated(true);
-            setUser({ email, authenticated: true });
+            setUser({
+                email: data.user?.email || email,
+                id: data.user?.id,
+                authenticated: true,
+            });
 
             return { success: true };
         } catch (err) {
+            const status = err.response?.status;
             const errorMessage = err.response?.data?.detail || 'Login failed';
+
+            // V5: 403 = email not verified
+            if (status === 403) {
+                setError('Veuillez vérifier votre email avant de vous connecter.');
+                return { success: false, error: 'Email not verified', emailNotVerified: true };
+            }
+
             setError(errorMessage);
             return { success: false, error: errorMessage };
         } finally {
@@ -94,14 +119,9 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
 
         try {
-            const data = await authAPI.register(email, password);
-
-            // Store tokens
-            setAccessToken(data.access_token);
-            localStorage.setItem('refresh_token', data.refresh_token);
-
-            setIsAuthenticated(true);
-            setUser({ email, authenticated: true, emailVerified: false });
+            // V5: register returns just a message, no tokens
+            // User must verify email before logging in
+            await authAPI.register(email, password);
 
             return { success: true, needsVerification: true };
         } catch (err) {
@@ -113,7 +133,13 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const logout = useCallback(() => {
+    const logout = useCallback(async () => {
+        // V5: call backend to invalidate session
+        try {
+            await authAPI.logout();
+        } catch {
+            // Logout even if backend call fails
+        }
         clearTokens();
         setIsAuthenticated(false);
         setUser(null);
@@ -126,17 +152,18 @@ export const AuthProvider = ({ children }) => {
         try {
             await authAPI.forgotPassword(email);
             return { success: true };
-        } catch (err) {
+        } catch {
             // Always return success to prevent user enumeration
             return { success: true };
         }
     }, []);
 
-    const resetPassword = useCallback(async (token, newPassword) => {
+    // V5: resetPassword now takes access_token + refresh_token from URL fragment
+    const resetPassword = useCallback(async (accessTokenParam, refreshTokenParam, newPassword) => {
         setError(null);
 
         try {
-            await authAPI.resetPassword(token, newPassword);
+            await authAPI.resetPassword(accessTokenParam, refreshTokenParam, newPassword);
             return { success: true };
         } catch (err) {
             const errorMessage = err.response?.data?.detail || 'Password reset failed';
@@ -145,28 +172,12 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const verifyEmail = useCallback(async (token) => {
-        setError(null);
-
-        try {
-            await authAPI.verifyEmail(token);
-            if (user) {
-                setUser({ ...user, emailVerified: true });
-            }
-            return { success: true };
-        } catch (err) {
-            const errorMessage = err.response?.data?.detail || 'Email verification failed';
-            setError(errorMessage);
-            return { success: false, error: errorMessage };
-        }
-    }, [user]);
-
     const deleteAccount = useCallback(async () => {
         setError(null);
 
         try {
             await authAPI.deleteAccount();
-            logout();
+            await logout();
             return { success: true };
         } catch (err) {
             const errorMessage = err.response?.data?.detail || 'Account deletion failed';
@@ -185,7 +196,6 @@ export const AuthProvider = ({ children }) => {
         logout,
         forgotPassword,
         resetPassword,
-        verifyEmail,
         deleteAccount,
         clearError: () => setError(null),
     };

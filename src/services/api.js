@@ -50,14 +50,13 @@ api.interceptors.response.use(
                 const refreshToken = localStorage.getItem('refresh_token');
 
                 if (!refreshToken) {
-                    // No refresh token, force logout
                     clearTokens();
                     window.location.href = '/login';
                     return Promise.reject(error);
                 }
 
-                // Call refresh endpoint
-                const response = await axios.post(`${API_BASE_URL}/refresh`, {
+                // Call refresh endpoint (V5: /auth/refresh)
+                const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
                     refresh_token: refreshToken,
                 });
 
@@ -70,7 +69,6 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${access_token}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                // Refresh failed, force logout
                 clearTokens();
                 window.location.href = '/login';
                 return Promise.reject(refreshError);
@@ -82,54 +80,53 @@ api.interceptors.response.use(
 );
 
 // ================================
-// AUTH ENDPOINTS
+// AUTH ENDPOINTS (V5: /auth/* prefix)
 // ================================
 
 export const authAPI = {
     // Register new user
     register: async (email, password) => {
-        const response = await api.post('/register', { email, password });
+        const response = await api.post('/auth/register', { email, password });
         return response.data;
     },
 
-    // Login (OAuth2 requires form-urlencoded)
+    // Login (V5: JSON with email field, not form-data with username)
     login: async (email, password) => {
-        const formData = new URLSearchParams();
-        formData.append('username', email);
-        formData.append('password', password);
-
-        const response = await axios.post(`${API_BASE_URL}/token`, formData, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        });
+        const response = await api.post('/auth/login', { email, password });
         return response.data;
     },
 
-    // Verify email
-    verifyEmail: async (token) => {
-        const response = await api.post('/verify-email', { token });
+    // Logout (V5: new endpoint, invalidates session)
+    logout: async () => {
+        const response = await api.post('/auth/logout');
         return response.data;
     },
 
     // Forgot password
     forgotPassword: async (email) => {
-        const response = await api.post('/forgot-password', { email });
+        const response = await api.post('/auth/forgot-password', { email });
         return response.data;
     },
 
-    // Reset password
-    resetPassword: async (token, newPassword) => {
-        const response = await api.post('/reset-password', {
-            token,
+    // Reset password (V5: sends access_token + refresh_token from URL fragment)
+    resetPassword: async (accessToken, refreshToken, newPassword) => {
+        const response = await api.post('/auth/reset-password', {
+            access_token: accessToken,
+            refresh_token: refreshToken,
             new_password: newPassword,
         });
         return response.data;
     },
 
-    // Delete account
+    // Get current user info
+    getMe: async () => {
+        const response = await api.get('/auth/me');
+        return response.data;
+    },
+
+    // Delete account (V5: /auth/me instead of /users/me)
     deleteAccount: async () => {
-        const response = await api.delete('/users/me');
+        const response = await api.delete('/auth/me');
         return response.data;
     },
 };
@@ -159,6 +156,42 @@ export const promptAPI = {
     // Get stats
     getStats: async () => {
         const response = await api.get('/api/stats');
+        return response.data;
+    },
+};
+
+// ================================
+// MODELS ENDPOINT (V5: new, public)
+// ================================
+
+export const modelsAPI = {
+    // Get all supported models with sovereignty & green data
+    getAll: async () => {
+        const response = await api.get('/api/models');
+        return response.data;
+    },
+};
+
+// ================================
+// TEMPLATES ENDPOINTS (V5: new)
+// ================================
+
+export const templatesAPI = {
+    // Get templates (user's + public)
+    getAll: async (params = {}) => {
+        const response = await api.get('/api/templates', { params });
+        return response.data;
+    },
+
+    // Create a template
+    create: async (template) => {
+        const response = await api.post('/api/templates', template);
+        return response.data;
+    },
+
+    // Delete a template
+    delete: async (id) => {
+        const response = await api.delete(`/api/templates/${id}`);
         return response.data;
     },
 };

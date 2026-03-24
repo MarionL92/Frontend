@@ -51,10 +51,10 @@ const Register = () => {
 
         if (result.success) {
             setSuccess(true);
-            // After 3 seconds, redirect to login so they can authenticate once verified
+            // V5: user must verify email before login, redirect after 5s
             setTimeout(() => {
                 navigate('/login');
-            }, 3000);
+            }, 5000);
         } else {
             setError(result.error || 'Une erreur est survenue');
         }

@@ -26,7 +26,7 @@ const Login = () => {
         if (result.success) {
             navigate(from, { replace: true });
         } else {
-            if (result.error?.includes('403') || result.error?.includes('verify')) {
+            if (result.emailNotVerified) {
                 setError('Veuillez vérifier votre email avant de vous connecter.');
             } else {
                 setError(result.error || 'Email ou mot de passe incorrect');
