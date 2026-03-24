@@ -125,6 +125,7 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
+  padding: 1.5rem; /* Add default comfortable padding */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -243,6 +244,17 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-secondary);
+}
+
+/* Square Icon Container Utility */
+.square-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem; /* rounded-xl */
+  flex-shrink: 0;
 }
 
 /* Error Text */
@@ -412,6 +424,15 @@ body {
   }
 }
 
+@keyframes progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
 }
@@ -488,7 +509,7 @@ a.neon-link:hover::after {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.25rem; /* Slightly wider on mobile */
 }
 
 @media (min-width: 640px) {
@@ -500,5 +521,84 @@ a.neon-link:hover::after {
 @media (min-width: 1024px) {
   .container {
     padding: 0 2rem;
+  }
+}
+
+/* ================================
+   MOBILE RESPONSIVE OVERRIDES
+   ================================ */
+
+@media (max-width: 640px) {
+  /* Glass cards need consistent internal padding on mobile */
+  .glass-card {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+
+  /* Smaller headings on mobile */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.15rem !important;
+  }
+
+  /* Page content needs breathing room */
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  /* Stack grids vertically on mobile */
+  .grid.lg\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .grid.grid-cols-3 {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Add padding to 3-col grid children on mobile for text breathing room */
+  .grid.grid-cols-3 > div {
+    padding: 0.75rem 0.5rem !important;
+  }
+
+  /* Smaller eco metric cards */
+  .grid.grid-cols-3 .text-xl {
+    font-size: 1rem !important;
+  }
+
+  .grid.grid-cols-3 .text-base {
+    font-size: 0.8rem !important;
+  }
+
+  .grid.grid-cols-3 .text-xs {
+    font-size: 0.65rem !important;
+  }
+
+  /* Badges wrap nicely */
+  .flex.flex-wrap {
+    gap: 0.375rem !important;
+  }
+
+  /* Button full width */
+  .btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  /* Textarea min-height */
+  textarea.input-field {
+    min-height: 140px !important;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .grid.lg\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
   }
 }

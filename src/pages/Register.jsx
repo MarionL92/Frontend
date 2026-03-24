@@ -64,31 +64,72 @@ const Register = () => {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
+            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-6">
                 <div className="w-full max-w-md text-center">
-                    <div className="glass-card animate-fade-in" style={{ padding: '25px' }}>
+                    <div className="glass-card animate-fade-in" style={{ padding: '2.5rem 2rem' }}>
+                        {/* Animated Success Icon */}
                         <div
-                            className="w-16 h-16 rounded-full bg-[var(--success)]/20 flex items-center justify-center mx-auto"
-                            style={{ marginBottom: '15px', boxShadow: '0 0 20px rgba(57, 255, 20, 0.3)' }}
+                            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto"
+                            style={{
+                                marginBottom: '1.5rem',
+                                background: 'linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(0, 255, 135, 0.1))',
+                                boxShadow: '0 0 30px rgba(57, 255, 20, 0.25), 0 0 60px rgba(57, 255, 20, 0.1)',
+                                animation: 'pulse-glow 2s ease-in-out infinite',
+                            }}
                         >
-                            <CheckCircle className="w-8 h-8 text-[var(--success)]" />
+                            <CheckCircle className="w-10 h-10" style={{ color: 'var(--success)', filter: 'drop-shadow(0 0 8px rgba(57, 255, 20, 0.6))' }} />
                         </div>
-                        
-                        <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ marginBottom: '15px' }}>
+
+                        {/* Title */}
+                        <h2 className="text-2xl font-bold gradient-text" style={{ marginBottom: '1.5rem' }}>
                             Compte créé avec succès !
                         </h2>
-                        
-                        <div className="text-[var(--text-secondary)]">
-                            <p style={{ marginBottom: '15px' }}>
-                                Un email de vérification a été envoyé à <strong>{email}</strong>.
+
+                        {/* Email verification info */}
+                        <div
+                            className="rounded-xl border border-[var(--glass-border)]"
+                            style={{ padding: '1.25rem', marginBottom: '1.5rem', background: 'rgba(57, 255, 20, 0.03)' }}
+                        >
+                            <div className="flex items-center justify-center gap-3" style={{ marginBottom: '0.75rem' }}>
+                                <div
+                                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                    style={{ background: 'rgba(57, 255, 20, 0.1)' }}
+                                >
+                                    <Mail className="w-5 h-5" style={{ color: 'var(--primary)' }} />
+                                </div>
+                                <span className="text-sm font-semibold text-[var(--text-primary)]">Vérifiez votre email</span>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)]" style={{ marginBottom: '0.5rem', lineHeight: 1.6 }}>
+                                Un email de vérification a été envoyé à
                             </p>
-                            <p style={{ marginBottom: '15px' }}>
-                                Vérifiez votre boîte de réception pour activer votre compte.
+                            <p className="text-sm font-semibold" style={{ color: 'var(--primary)', wordBreak: 'break-all' }}>
+                                {email}
                             </p>
                         </div>
-                        
-                        <p className="text-sm text-[var(--text-muted)]" style={{ margin: 0 }}>
-                            Redirection automatique...
+
+                        <p className="text-sm text-[var(--text-secondary)]" style={{ marginBottom: '1.5rem', lineHeight: 1.6 }}>
+                            Cliquez sur le lien dans l'email pour activer votre compte et commencer à optimiser vos prompts.
+                        </p>
+
+                        {/* Countdown progress bar */}
+                        <div style={{ marginBottom: '0.75rem' }}>
+                            <div
+                                className="w-full rounded-full overflow-hidden"
+                                style={{ height: '4px', background: 'var(--bg-surface)' }}
+                            >
+                                <div
+                                    className="h-full rounded-full"
+                                    style={{
+                                        background: 'linear-gradient(90deg, var(--primary), var(--accent))',
+                                        animation: 'progress-fill 5s linear forwards',
+                                        boxShadow: '0 0 8px rgba(57, 255, 20, 0.4)',
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <p className="text-xs text-[var(--text-muted)]">
+                            Redirection vers la connexion...
                         </p>
                     </div>
                 </div>

@@ -39,10 +39,10 @@ const formatValue = (num, decimals = 4) => {
 };
 
 const StatCard = ({ icon: Icon, label, value, unit, color, subtitle }) => (
-    <div className="glass-card" style={{ padding: '1.25rem' }}>
-        <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
+    <div className="glass-card">
+        <div className="flex items-center gap-2 mb-3">
             <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                className="square-icon"
                 style={{ backgroundColor: `${color}15` }}
             >
                 <Icon className="w-5 h-5" style={{ color, filter: `drop-shadow(0 0 4px ${color}80)` }} />
@@ -141,9 +141,9 @@ const Dashboard = () => {
         <Layout>
             <div className="container">
                 {/* Header */}
-                <div className="flex items-center gap-4" style={{ marginBottom: '1.5rem' }}>
+                <div className="flex items-center gap-4 mb-6">
                     <div
-                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
+                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
                     >
                         <BarChart3 className="w-7 h-7 text-[var(--bg-primary)]" />
@@ -168,9 +168,9 @@ const Dashboard = () => {
                         <p className="text-[var(--text-secondary)]">{error}</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }} className="animate-fade-in">
+                    <div className="flex flex-col gap-8 animate-fade-in">
                         {/* Stats Grid */}
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-4" style={{ gap: '1.25rem' }}>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             <StatCard
                                 icon={Zap}
                                 label="Prompts générés"
@@ -201,9 +201,9 @@ const Dashboard = () => {
                         </div>
 
                         {/* Charts Row */}
-                        <div className="grid lg:grid-cols-2" style={{ gap: '1.5rem' }}>
+                        <div className="grid lg:grid-cols-2 gap-6">
                             {/* Model Usage Pie Chart */}
-                            <div className="glass-card p-5">
+                            <div className="glass-card">
                                 <div className="flex items-center gap-3 mb-4">
                                     <PieChart className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
@@ -261,7 +261,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* Bar Chart */}
-                            <div className="glass-card p-5">
+                            <div className="glass-card">
                                 <div className="flex items-center gap-3 mb-4">
                                     <BarChart3 className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
@@ -309,7 +309,7 @@ const Dashboard = () => {
                         </div>
 
                         {/* Impact Summary */}
-                        <div className="glass-card p-5">
+                        <div className="glass-card">
                             <div className="flex items-center gap-2 mb-5">
                                 <Globe className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                 <h3 className="font-semibold text-[var(--text-primary)]">
@@ -318,22 +318,22 @@ const Dashboard = () => {
                             </div>
 
                             {totalPrompts > 0 ? (
-                                <div className="grid sm:grid-cols-3 gap-4">
-                                    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div className="p-5 lg:p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
                                         <Smartphone className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.4))' }} />
                                         <p className="text-2xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
                                             {formatValue(equivalences.smartphone, 2)}
                                         </p>
                                         <p className="text-xs text-[var(--text-muted)] mt-1">recharges smartphone</p>
                                     </div>
-                                    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                    <div className="p-5 lg:p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
                                         <Car className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 6px rgba(0, 255, 135, 0.4))' }} />
                                         <p className="text-2xl font-bold" style={{ color: 'var(--accent)', textShadow: '0 0 8px rgba(0, 255, 135, 0.3)' }}>
                                             {formatValue(equivalences.car, 2)}
                                         </p>
                                         <p className="text-xs text-[var(--text-muted)] mt-1">mètres en voiture électrique</p>
                                     </div>
-                                    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                    <div className="p-5 lg:p-6 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
                                         <Lightbulb className="w-8 h-8 mx-auto mb-3" style={{ color: '#ffdd00', filter: 'drop-shadow(0 0 6px rgba(255, 221, 0, 0.4))' }} />
                                         <p className="text-2xl font-bold" style={{ color: '#ffdd00', textShadow: '0 0 8px rgba(255, 221, 0, 0.3)' }}>
                                             {formatValue(equivalences.led, 2)}

@@ -103,28 +103,33 @@ const Layout = ({ children }) => {
 
                 {/* Mobile Navigation */}
                 {isAuthenticated && mobileMenuOpen && (
-                    <nav className="md:hidden border-t border-[var(--glass-border)] p-4 space-y-2 animate-fade-in">
+                    <nav className="md:hidden border-t border-[var(--glass-border)] animate-fade-in" style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         {navItems.map((item) => (
                             <Link
                                 key={item.path}
                                 to={item.path}
                                 onClick={() => setMobileMenuOpen(false)}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive(item.path)
+                                className={`flex items-center gap-3 rounded-xl transition-all ${isActive(item.path)
                                     ? 'text-[var(--bg-primary)] font-semibold'
                                     : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface)]'
                                     }`}
                                 style={isActive(item.path) ? {
                                     background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-                                    boxShadow: 'var(--neon-glow-sm)'
-                                } : {}}
+                                    boxShadow: 'var(--neon-glow-sm)',
+                                    padding: '0.875rem 1.25rem',
+                                } : {
+                                    padding: '0.875rem 1.25rem',
+                                }}
                             >
                                 <item.icon className="w-5 h-5" />
                                 <span className="font-medium">{item.label}</span>
                             </Link>
                         ))}
+                        <div style={{ height: '1px', background: 'var(--glass-border)', margin: '0.25rem 0' }} />
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left text-[var(--error)] hover:bg-[var(--bg-surface)] transition-all"
+                            className="flex items-center gap-3 rounded-xl w-full text-left text-[var(--error)] hover:bg-[var(--bg-surface)] transition-all"
+                            style={{ padding: '0.875rem 1.25rem' }}
                         >
                             <LogOut className="w-5 h-5" />
                             <span className="font-medium">Déconnexion</span>
@@ -134,7 +139,7 @@ const Layout = ({ children }) => {
             </header>
 
             {/* Main Content */}
-            <main style={{ paddingTop: '8rem', marginBottom: '2rem' }}>
+            <main style={{ paddingTop: '7rem', paddingBottom: '3rem' }}>
                 {children}
             </main>
 

@@ -100,9 +100,9 @@ const Generator = () => {
                 {/* Main Grid - Split Screen */}
                 <div className="grid lg:grid-cols-2" style={{ gap: '2.5rem' }}>
                     {/* LEFT: Input Section */}
-                    <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center">
+                            <div className="square-icon bg-[var(--primary)]/20">
                                 <Zap className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
                             </div>
                             <div>
@@ -162,10 +162,10 @@ const Generator = () => {
                     </div>
 
                     {/* RIGHT: Output Section */}
-                    <div className="glass-card space-y-5" style={{ padding: '1.5rem' }}>
+                    <div className="glass-card space-y-5">
                         <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem' }}>
                             <div
-                                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                className="square-icon"
                                 style={{ backgroundColor: `${modelInfo.color}20` }}
                             >
                                 <Check className="w-5 h-5" style={{ color: modelInfo.color, filter: `drop-shadow(0 0 4px ${modelInfo.color}80)` }} />
@@ -227,7 +227,7 @@ const Generator = () => {
 
                                     {/* ===== GREEN / ECO CARD ===== */}
                                     {result.green_data && (
-                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]" style={{ padding: '1.5rem' }}>
+                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] p-5 lg:p-6">
                                             <div className="flex items-center justify-between mb-5">
                                                 <div className="flex items-center gap-2">
                                                     <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
@@ -237,8 +237,8 @@ const Generator = () => {
                                             </div>
 
                                             {/* Key Metrics Row */}
-                                            <div className="grid grid-cols-3" style={{ gap: '0.75rem', marginBottom: '1.25rem' }}>
-                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]" style={{ padding: '1rem 0.75rem' }}>
+                                            <div className="grid grid-cols-3 gap-3 mb-5">
+                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)] p-4">
                                                     <BatteryCharging className="w-5 h-5 mx-auto" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))', marginBottom: '0.5rem' }} />
                                                     <p className="text-xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)', lineHeight: 1.2 }}>
                                                         {result.green_data.tokens_saved || 0}
@@ -263,8 +263,8 @@ const Generator = () => {
 
                                             {/* Equivalences Row */}
                                             {result.green_data.equivalences && (
-                                                <div className="grid grid-cols-3" style={{ gap: '0.75rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-                                                    <div className="flex flex-col items-center text-center" style={{ gap: '0.35rem' }}>
+                                                <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[var(--glass-border)]">
+                                                    <div className="flex flex-col items-center text-center gap-1.5 px-2">
                                                         <Smartphone className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                                                         <span className="text-base font-semibold text-[var(--text-primary)]">
                                                             {formatEquivalence(result.green_data.equivalences.smartphone_charges)}
@@ -299,7 +299,7 @@ const Generator = () => {
 
                                     {/* ===== SOVEREIGNTY CARD ===== */}
                                     {result.sovereignty_data && (
-                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]" style={{ padding: '1.5rem' }}>
+                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] p-5 lg:p-6">
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-2">
                                                     <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
