@@ -17,8 +17,32 @@ import {
     Sparkles,
     Leaf,
     Shield,
-    X
+    X,
+    ShieldCheck,
+    ShieldAlert,
+    MapPin,
+    Building2,
+    FileKey,
+    Droplets,
+    BatteryCharging
 } from 'lucide-react';
+
+// Smart number formatting - avoids showing "0.000" when value exists but is tiny
+const formatSmallNumber = (num, decimals = 4) => {
+    if (num === null || num === undefined) return '—';
+    if (num === 0) return '0';
+    if (Math.abs(num) < 0.0001) return '< 0.0001';
+    if (Math.abs(num) < 0.001) return num.toExponential(1);
+    return num.toFixed(decimals).replace(/\.?0+$/, '') || '0';
+};
+
+const formatEquivalence = (num) => {
+    if (num === null || num === undefined) return '—';
+    if (num === 0) return '0';
+    if (num < 0.001) return '< 0.001';
+    if (num < 1) return num.toFixed(3);
+    return num.toFixed(2);
+};
 
 const Generator = () => {
     const [inputText, setInputText] = useState('');
@@ -160,7 +184,7 @@ const Generator = () => {
                                     className="relative p-4 rounded-xl bg-[var(--bg-secondary)] border-2 transition-all"
                                     style={{ borderColor: modelInfo.color, boxShadow: `0 0 15px ${modelInfo.color}20` }}
                                 >
-                                    <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed">
+                                    <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed pr-10">
                                         {result.optimized_prompt}
                                     </pre>
                                     <button
@@ -196,87 +220,147 @@ const Generator = () => {
                                                 <X className="w-4 h-4 text-[var(--text-muted)]" />
                                             </button>
                                         </div>
-                                        <p className="text-sm text-[var(--text-secondary)]">{result.ai_reasoning}</p>
+                                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{result.ai_reasoning}</p>
                                     </div>
                                 )}
 
-                                {/* Scores Section */}
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {/* Green Score */}
+                                {/* Scores Section - Full Width Cards */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+                                    {/* ===== GREEN / ECO CARD ===== */}
                                     {result.green_data && (
-                                        <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
-                                                <span className="font-medium text-[var(--text-primary)]">Impact Écologique</span>
+                                        <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                            <div className="flex items-center justify-between mb-5">
+                                                <div className="flex items-center gap-2">
+                                                    <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
+                                                    <span className="font-semibold text-[var(--text-primary)]">Impact Écologique</span>
+                                                </div>
+                                                <EcoScoreBadge score={result.green_data.eco_score} size="md" />
                                             </div>
 
-                                            <EcoScoreBadge score={result.green_data.eco_score} size="lg" />
+                                            {/* Key Metrics Row */}
+                                            <div className="grid grid-cols-3 gap-3 mb-4">
+                                                <div className="text-center p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]">
+                                                    <BatteryCharging className="w-4 h-4 mx-auto mb-1" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
+                                                    <p className="text-lg font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
+                                                        {result.green_data.tokens_saved || 0}
+                                                    </p>
+                                                    <p className="text-[10px] text-[var(--text-muted)] leading-tight">tokens économisés</p>
+                                                </div>
+                                                <div className="text-center p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]">
+                                                    <Leaf className="w-4 h-4 mx-auto mb-1" style={{ color: 'var(--eco-b)', filter: 'drop-shadow(0 0 3px rgba(160, 255, 0, 0.4))' }} />
+                                                    <p className="text-lg font-bold" style={{ color: 'var(--eco-b)', textShadow: '0 0 8px rgba(160, 255, 0, 0.3)' }}>
+                                                        {formatSmallNumber(result.green_data.co2_saved_g)}
+                                                    </p>
+                                                    <p className="text-[10px] text-[var(--text-muted)] leading-tight">g CO₂ évités</p>
+                                                </div>
+                                                <div className="text-center p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]">
+                                                    <Droplets className="w-4 h-4 mx-auto mb-1" style={{ color: '#60a5fa', filter: 'drop-shadow(0 0 3px rgba(96, 165, 250, 0.4))' }} />
+                                                    <p className="text-lg font-bold" style={{ color: '#60a5fa', textShadow: '0 0 8px rgba(96, 165, 250, 0.3)' }}>
+                                                        {formatSmallNumber(result.green_data.water_saved_ml)}
+                                                    </p>
+                                                    <p className="text-[10px] text-[var(--text-muted)] leading-tight">mL eau épargnés</p>
+                                                </div>
+                                            </div>
 
-                                            {/* Equivalences */}
+                                            {/* Equivalences Row */}
                                             {result.green_data.equivalences && (
-                                                <div className="mt-4 space-y-2">
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <Smartphone className="w-4 h-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
-                                                        <span className="text-[var(--text-secondary)]">
-                                                            {result.green_data.equivalences.smartphone_charges.toFixed(3)} recharges 📱
+                                                <div className="grid grid-cols-3 gap-3 pt-3 border-t border-[var(--glass-border)]">
+                                                    <div className="flex flex-col items-center gap-1 text-center">
+                                                        <Smartphone className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
+                                                        <span className="text-sm font-medium text-[var(--text-primary)]">
+                                                            {formatEquivalence(result.green_data.equivalences.smartphone_charges)}
                                                         </span>
+                                                        <span className="text-[10px] text-[var(--text-muted)]">recharges</span>
                                                     </div>
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <Car className="w-4 h-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
-                                                        <span className="text-[var(--text-secondary)]">
-                                                            {result.green_data.equivalences.km_electric_car.toFixed(3)} m parcourus 🚗
+                                                    <div className="flex flex-col items-center gap-1 text-center">
+                                                        <Car className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
+                                                        <span className="text-sm font-medium text-[var(--text-primary)]">
+                                                            {formatEquivalence(result.green_data.equivalences.km_electric_car)}
                                                         </span>
+                                                        <span className="text-[10px] text-[var(--text-muted)]">km en VE</span>
                                                     </div>
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <Lightbulb className="w-4 h-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))' }} />
-                                                        <span className="text-[var(--text-secondary)]">
-                                                            {result.green_data.equivalences.hours_led_bulb.toFixed(3)} h LED 💡
+                                                    <div className="flex flex-col items-center gap-1 text-center">
+                                                        <Lightbulb className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
+                                                        <span className="text-sm font-medium text-[var(--text-primary)]">
+                                                            {formatEquivalence(result.green_data.equivalences.hours_led_bulb)}
                                                         </span>
+                                                        <span className="text-[10px] text-[var(--text-muted)]">h LED</span>
                                                     </div>
                                                 </div>
                                             )}
 
-                                            <div className="mt-3 pt-3 border-t border-[var(--glass-border)]">
-                                                <p className="text-xs text-[var(--text-muted)]">
-                                                    {result.green_data.tokens_saved} tokens économisés
+                                            {/* Source */}
+                                            {result.green_data.methodology_source && (
+                                                <p className="text-[10px] text-[var(--text-muted)] mt-3 italic">
+                                                    {result.green_data.methodology_source}
                                                 </p>
-                                                <p className="text-xs text-[var(--text-muted)]">
-                                                    {result.green_data.co2_saved_g.toFixed(4)} g CO₂ évités
-                                                </p>
-                                            </div>
+                                            )}
                                         </div>
                                     )}
 
-                                    {/* Sovereignty Score */}
+                                    {/* ===== SOVEREIGNTY CARD ===== */}
                                     {result.sovereignty_data && (
-                                        <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
-                                                <span className="font-medium text-[var(--text-primary)]">Souveraineté</span>
+                                        <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
+                                                    <span className="font-semibold text-[var(--text-primary)]">Souveraineté Numérique</span>
+                                                </div>
+                                                <SovereigntyGauge score={result.sovereignty_data.score} size={64} />
                                             </div>
 
-                                            <div className="flex justify-center">
-                                                <SovereigntyGauge score={result.sovereignty_data.score} size={100} />
-                                            </div>
-
-                                            <div className="mt-4 space-y-2 text-sm">
-                                                <div className="flex justify-between">
-                                                    <span className="text-[var(--text-muted)]">Localisation</span>
-                                                    <span className="text-[var(--text-secondary)]">{result.sovereignty_data.location}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-[var(--text-muted)]">Entreprise</span>
-                                                    <span className="text-[var(--text-secondary)]">{result.sovereignty_data.company}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-[var(--text-muted)]">Licence</span>
-                                                    <span className="text-[var(--text-secondary)]">{result.sovereignty_data.license}</span>
-                                                </div>
-                                                {result.sovereignty_data.cloud_act_risk && (
-                                                    <div className="p-2 rounded-lg bg-[var(--warning)]/10 text-[var(--warning)] text-xs">
-                                                        ⚠️ Risque Cloud Act (juridiction USA)
+                                            {/* Details Grid */}
+                                            <div className="space-y-2.5">
+                                                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
+                                                    <MapPin className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
+                                                    <div className="flex justify-between flex-1 min-w-0">
+                                                        <span className="text-xs text-[var(--text-muted)]">Localisation</span>
+                                                        <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data.location}</span>
                                                     </div>
-                                                )}
+                                                </div>
+                                                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
+                                                    <Building2 className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
+                                                    <div className="flex justify-between flex-1 min-w-0">
+                                                        <span className="text-xs text-[var(--text-muted)]">Entreprise</span>
+                                                        <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data.company}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
+                                                    <FileKey className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
+                                                    <div className="flex justify-between flex-1 min-w-0">
+                                                        <span className="text-xs text-[var(--text-muted)]">Licence</span>
+                                                        <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data.license}</span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Cloud Act Risk / RGPD badges */}
+                                                <div className="flex gap-2 mt-1">
+                                                    {result.sovereignty_data.cloud_act_risk ? (
+                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/30">
+                                                            <ShieldAlert className="w-3.5 h-3.5 text-[var(--error)]" />
+                                                            <span className="text-xs font-medium text-[var(--error)]">Cloud Act</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/30">
+                                                            <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" />
+                                                            <span className="text-xs font-medium text-[var(--primary)]">Hors Cloud Act</span>
+                                                        </div>
+                                                    )}
+                                                    {result.sovereignty_data.rgpd_compliant !== undefined && (
+                                                        result.sovereignty_data.rgpd_compliant ? (
+                                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/30">
+                                                                <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" />
+                                                                <span className="text-xs font-medium text-[var(--primary)]">RGPD</span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/30">
+                                                                <ShieldAlert className="w-3.5 h-3.5 text-[var(--warning)]" />
+                                                                <span className="text-xs font-medium text-[var(--warning)]">Non RGPD</span>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     )}

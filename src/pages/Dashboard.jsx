@@ -12,7 +12,9 @@ import {
     Smartphone,
     Car,
     Lightbulb,
-    Globe
+    Globe,
+    Droplets,
+    Activity
 } from 'lucide-react';
 import {
     PieChart as RechartsPie,
@@ -27,23 +29,35 @@ import {
     CartesianGrid
 } from 'recharts';
 
-const StatCard = ({ icon: Icon, label, value, unit, color }) => (
-    <div className="glass-card" style={{ padding: '0.5rem 1rem 1rem 1rem' }}>
+// Smart number formatting
+const formatValue = (num, decimals = 4) => {
+    if (num === null || num === undefined) return '0';
+    if (num === 0) return '0';
+    if (Math.abs(num) >= 1) return num.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
+    if (Math.abs(num) < 0.0001) return '< 0.0001';
+    return num.toFixed(decimals).replace(/\.?0+$/, '') || '0';
+};
+
+const StatCard = ({ icon: Icon, label, value, unit, color, subtitle }) => (
+    <div className="glass-card" style={{ padding: '1.25rem' }}>
         <div className="flex items-center gap-2" style={{ marginBottom: '0.75rem' }}>
             <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: `${color}20` }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${color}15` }}
             >
-                <Icon className="w-4 h-4" style={{ color, filter: `drop-shadow(0 0 4px ${color}80)` }} />
+                <Icon className="w-5 h-5" style={{ color, filter: `drop-shadow(0 0 4px ${color}80)` }} />
             </div>
             <span className="text-sm text-[var(--text-secondary)]">{label}</span>
         </div>
         <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold" style={{ color: color, textShadow: `0 0 10px ${color}40` }}>
+            <span className="text-3xl font-bold" style={{ color, textShadow: `0 0 10px ${color}40` }}>
                 {value}
             </span>
             {unit && <span className="text-sm text-[var(--text-muted)]">{unit}</span>}
         </div>
+        {subtitle && (
+            <p className="text-xs text-[var(--text-muted)] mt-1">{subtitle}</p>
+        )}
     </div>
 );
 
@@ -90,32 +104,44 @@ const Dashboard = () => {
     // Prepare chart data
     const prepareModelUsageData = () => {
         if (!stats?.model_usage) return [];
-        return Object.entries(stats.model_usage).map(([model, count]) => ({
-            name: MODEL_NAMES[model] || model,
-            value: count,
-            color: MODEL_COLORS[model] || '#666',
-        }));
+        return Object.entries(stats.model_usage)
+            .filter(([, count]) => count > 0)
+            .map(([model, count]) => ({
+                name: MODEL_NAMES[model] || model,
+                value: count,
+                color: MODEL_COLORS[model] || '#666',
+            }));
     };
 
     const modelUsageData = prepareModelUsageData();
+    const totalPrompts = stats?.total_prompts || 0;
 
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
+            const percentage = totalPrompts > 0 ? ((payload[0].value / totalPrompts) * 100).toFixed(0) : 0;
             return (
                 <div className="glass-card px-3 py-2 text-sm" style={{ boxShadow: 'var(--neon-glow-sm)' }}>
-                    <p className="text-[var(--text-primary)]">{payload[0].name}</p>
-                    <p className="text-[var(--text-secondary)]">{payload[0].value} prompts</p>
+                    <p className="text-[var(--text-primary)] font-medium">{payload[0].name}</p>
+                    <p className="text-[var(--text-secondary)]">{payload[0].value} prompts ({percentage}%)</p>
                 </div>
             );
         }
         return null;
     };
 
+    // Calculate equivalences from total CO2
+    const co2 = stats?.total_co2_saved || 0;
+    const equivalences = {
+        smartphone: co2 > 0 ? (co2 / 8.3 * 1000) : 0,
+        car: co2 > 0 ? (co2 / 0.05) : 0,
+        led: co2 > 0 ? (co2 / 0.005) : 0,
+    };
+
     return (
         <Layout>
             <div className="container">
                 {/* Header */}
-                <div className="flex items-center gap-4" style={{ marginBottom: '1.25rem' }}>
+                <div className="flex items-center gap-4" style={{ marginBottom: '1.5rem' }}>
                     <div
                         className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
@@ -142,35 +168,43 @@ const Dashboard = () => {
                         <p className="text-[var(--text-secondary)]">{error}</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }} className="animate-fade-in">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }} className="animate-fade-in">
                         {/* Stats Grid */}
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3" style={{ gap: '2rem' }}>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4" style={{ gap: '1.25rem' }}>
                             <StatCard
                                 icon={Zap}
                                 label="Prompts générés"
-                                value={stats.total_prompts || 0}
+                                value={totalPrompts.toLocaleString()}
                                 color="var(--primary)"
                             />
                             <StatCard
                                 icon={TrendingUp}
                                 label="Tokens économisés"
-                                value={(stats.total_tokens_saved || 0).toLocaleString()}
+                                value={(stats?.total_tokens_saved || 0).toLocaleString()}
                                 color="var(--accent)"
                             />
                             <StatCard
                                 icon={Leaf}
                                 label="CO₂ économisé"
-                                value={(stats.total_co2_saved || 0).toFixed(4)}
+                                value={formatValue(co2)}
                                 unit="g"
                                 color="var(--eco-a)"
+                                subtitle={co2 > 0 ? `≈ ${(co2 / 1000).toFixed(6)} kg` : null}
+                            />
+                            <StatCard
+                                icon={Activity}
+                                label="Modèles utilisés"
+                                value={modelUsageData.length}
+                                unit={`/ ${Object.keys(MODEL_NAMES).length}`}
+                                color="#60a5fa"
                             />
                         </div>
 
-                        {/* Charts */}
-                        <div className="grid lg:grid-cols-2" style={{ gap: '2.5rem', marginTop: '0.5rem' }}>
+                        {/* Charts Row */}
+                        <div className="grid lg:grid-cols-2" style={{ gap: '1.5rem' }}>
                             {/* Model Usage Pie Chart */}
-                            <div className="glass-card p-4">
-                                <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}>
+                            <div className="glass-card p-5">
+                                <div className="flex items-center gap-3 mb-4">
                                     <PieChart className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
                                         Répartition par modèle
@@ -178,49 +212,57 @@ const Dashboard = () => {
                                 </div>
 
                                 {modelUsageData.length > 0 ? (
-                                    <div className="h-64">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <RechartsPie>
-                                                <Pie
-                                                    data={modelUsageData}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={60}
-                                                    outerRadius={80}
-                                                    paddingAngle={5}
-                                                    dataKey="value"
-                                                >
-                                                    {modelUsageData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip content={<CustomTooltip />} />
-                                            </RechartsPie>
-                                        </ResponsiveContainer>
+                                    <div>
+                                        <div className="h-56">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <RechartsPie>
+                                                    <Pie
+                                                        data={modelUsageData}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        innerRadius={55}
+                                                        outerRadius={80}
+                                                        paddingAngle={4}
+                                                        dataKey="value"
+                                                        strokeWidth={0}
+                                                    >
+                                                        {modelUsageData.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip content={<CustomTooltip />} />
+                                                </RechartsPie>
+                                            </ResponsiveContainer>
+                                        </div>
 
-                                        {/* Legend */}
-                                        <div className="flex flex-wrap justify-center gap-4 mt-4">
+                                        {/* Legend with percentages */}
+                                        <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-3">
                                             {modelUsageData.map((item, index) => (
                                                 <div key={index} className="flex items-center gap-2 text-sm">
                                                     <div
-                                                        className="w-3 h-3 rounded-full"
+                                                        className="w-3 h-3 rounded-full flex-shrink-0"
                                                         style={{ backgroundColor: item.color, boxShadow: `0 0 6px ${item.color}60` }}
                                                     />
                                                     <span className="text-[var(--text-secondary)]">{item.name}</span>
+                                                    <span className="text-[var(--text-muted)] text-xs">
+                                                        ({totalPrompts > 0 ? ((item.value / totalPrompts) * 100).toFixed(0) : 0}%)
+                                                    </span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="h-64 flex items-center justify-center text-[var(--text-muted)]">
-                                        Aucune donnée disponible
+                                    <div className="h-56 flex flex-col items-center justify-center text-[var(--text-muted)]">
+                                        <PieChart className="w-10 h-10 mb-2 opacity-20" />
+                                        <p className="text-sm">Aucune donnée disponible</p>
+                                        <p className="text-xs mt-1">Générez votre premier prompt !</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Bar Chart */}
-                            <div className="glass-card p-4">
-                                <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}>
+                            <div className="glass-card p-5">
+                                <div className="flex items-center gap-3 mb-4">
                                     <BarChart3 className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                     <h3 className="font-semibold text-[var(--text-primary)]">
                                         Utilisation par modèle
@@ -228,9 +270,9 @@ const Dashboard = () => {
                                 </div>
 
                                 {modelUsageData.length > 0 ? (
-                                    <div className="h-64">
+                                    <div className="h-56">
                                         <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={modelUsageData} layout="vertical">
+                                            <BarChart data={modelUsageData} layout="vertical" margin={{ left: 10 }}>
                                                 <CartesianGrid
                                                     strokeDasharray="3 3"
                                                     stroke="var(--glass-border)"
@@ -239,6 +281,7 @@ const Dashboard = () => {
                                                 <XAxis
                                                     type="number"
                                                     tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+                                                    allowDecimals={false}
                                                 />
                                                 <YAxis
                                                     dataKey="name"
@@ -247,7 +290,7 @@ const Dashboard = () => {
                                                     tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
                                                 />
                                                 <Tooltip content={<CustomTooltip />} />
-                                                <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                                <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28}>
                                                     {modelUsageData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={entry.color} />
                                                     ))}
@@ -256,44 +299,59 @@ const Dashboard = () => {
                                         </ResponsiveContainer>
                                     </div>
                                 ) : (
-                                    <div className="h-64 flex items-center justify-center text-[var(--text-muted)]">
-                                        Aucune donnée disponible
+                                    <div className="h-56 flex flex-col items-center justify-center text-[var(--text-muted)]">
+                                        <BarChart3 className="w-10 h-10 mb-2 opacity-20" />
+                                        <p className="text-sm">Aucune donnée disponible</p>
+                                        <p className="text-xs mt-1">Générez votre premier prompt !</p>
                                     </div>
                                 )}
                             </div>
                         </div>
 
                         {/* Impact Summary */}
-                        <div className="glass-card p-4">
-                            <div className="flex items-center gap-2 mb-6" style={{ marginLeft: '0.5rem' }}>
+                        <div className="glass-card p-5">
+                            <div className="flex items-center gap-2 mb-5">
                                 <Globe className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
                                 <h3 className="font-semibold text-[var(--text-primary)]">
                                     Votre Impact Environnemental
                                 </h3>
                             </div>
-                            <div className="grid sm:grid-cols-3 gap-6 text-center">
-                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-                                    <Smartphone className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.4))' }} />
-                                    <p className="text-lg font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
-                                        {((stats.total_co2_saved || 0) / 8.3 * 1000).toFixed(2)}
-                                    </p>
-                                    <p className="text-xs text-[var(--text-muted)]">recharges smartphone équivalentes</p>
+
+                            {totalPrompts > 0 ? (
+                                <div className="grid sm:grid-cols-3 gap-4">
+                                    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                        <Smartphone className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.4))' }} />
+                                        <p className="text-2xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
+                                            {formatValue(equivalences.smartphone, 2)}
+                                        </p>
+                                        <p className="text-xs text-[var(--text-muted)] mt-1">recharges smartphone</p>
+                                    </div>
+                                    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                        <Car className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 6px rgba(0, 255, 135, 0.4))' }} />
+                                        <p className="text-2xl font-bold" style={{ color: 'var(--accent)', textShadow: '0 0 8px rgba(0, 255, 135, 0.3)' }}>
+                                            {formatValue(equivalences.car, 2)}
+                                        </p>
+                                        <p className="text-xs text-[var(--text-muted)] mt-1">mètres en voiture électrique</p>
+                                    </div>
+                                    <div className="p-5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center">
+                                        <Lightbulb className="w-8 h-8 mx-auto mb-3" style={{ color: '#ffdd00', filter: 'drop-shadow(0 0 6px rgba(255, 221, 0, 0.4))' }} />
+                                        <p className="text-2xl font-bold" style={{ color: '#ffdd00', textShadow: '0 0 8px rgba(255, 221, 0, 0.3)' }}>
+                                            {formatValue(equivalences.led, 2)}
+                                        </p>
+                                        <p className="text-xs text-[var(--text-muted)] mt-1">heures d'éclairage LED</p>
+                                    </div>
                                 </div>
-                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-                                    <Car className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 6px rgba(0, 255, 135, 0.4))' }} />
-                                    <p className="text-lg font-bold" style={{ color: 'var(--accent)', textShadow: '0 0 8px rgba(0, 255, 135, 0.3)' }}>
-                                        {((stats.total_co2_saved || 0) / 0.05).toFixed(2)}
+                            ) : (
+                                <div className="text-center py-8">
+                                    <Globe className="w-12 h-12 mx-auto mb-3 opacity-20 text-[var(--text-muted)]" />
+                                    <p className="text-sm text-[var(--text-muted)]">
+                                        Vos équivalences environnementales apparaîtront ici
                                     </p>
-                                    <p className="text-xs text-[var(--text-muted)]">mètres en voiture électrique</p>
-                                </div>
-                                <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)]">
-                                    <Lightbulb className="w-8 h-8 mx-auto mb-2" style={{ color: '#ffdd00', filter: 'drop-shadow(0 0 6px rgba(255, 221, 0, 0.4))' }} />
-                                    <p className="text-lg font-bold" style={{ color: '#ffdd00', textShadow: '0 0 8px rgba(255, 221, 0, 0.3)' }}>
-                                        {((stats.total_co2_saved || 0) / 0.005).toFixed(2)}
+                                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                                        Chaque prompt optimisé contribue à réduire votre empreinte carbone
                                     </p>
-                                    <p className="text-xs text-[var(--text-muted)]">heures d'éclairage LED</p>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 )}

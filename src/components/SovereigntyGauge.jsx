@@ -1,8 +1,10 @@
 const SovereigntyGauge = ({ score = 0, size = 120 }) => {
-    const radius = (size - 20) / 2;
+    const isCompact = size <= 72;
+    const radius = (size - (isCompact ? 12 : 20)) / 2;
     const circumference = 2 * Math.PI * radius;
     const progress = (score / 100) * circumference;
     const offset = circumference - progress;
+    const strokeWidth = isCompact ? 6 : 10;
 
     const getColor = (s) => {
         if (s >= 80) return 'var(--eco-a)';
@@ -49,7 +51,7 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
                         r={radius}
                         fill="none"
                         stroke="var(--bg-surface)"
-                        strokeWidth="10"
+                        strokeWidth={strokeWidth}
                     />
                     {/* Progress circle with neon glow */}
                     <circle
@@ -58,7 +60,7 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
                         r={radius}
                         fill="none"
                         stroke={getColor(score)}
-                        strokeWidth="10"
+                        strokeWidth={strokeWidth}
                         strokeLinecap="round"
                         strokeDasharray={circumference}
                         strokeDashoffset={offset}
@@ -70,18 +72,22 @@ const SovereigntyGauge = ({ score = 0, size = 120 }) => {
                 {/* Center text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span
-                        className="text-2xl font-bold"
+                        className={`${isCompact ? 'text-base' : 'text-2xl'} font-bold`}
                         style={{ color: getColor(score), textShadow: `0 0 10px ${getGlowColor(score)}` }}
                     >
                         {score}
                     </span>
-                    <span className="text-xs text-[var(--text-secondary)]">/100</span>
+                    {!isCompact && (
+                        <span className="text-xs text-[var(--text-secondary)]">/100</span>
+                    )}
                 </div>
             </div>
-            <div className="mt-2 text-center">
-                <p className="text-sm font-medium text-[var(--text-primary)]">Souveraineté</p>
-                <p className="text-xs text-[var(--text-secondary)]">{getLabel(score)}</p>
-            </div>
+            {!isCompact && (
+                <div className="mt-2 text-center">
+                    <p className="text-sm font-medium text-[var(--text-primary)]">Souveraineté</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{getLabel(score)}</p>
+                </div>
+            )}
         </div>
     );
 };
