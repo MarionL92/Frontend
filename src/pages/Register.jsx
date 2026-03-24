@@ -64,7 +64,7 @@ const Register = () => {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-6">
+            <div className="min-h-screen flex items-center justify-center px-6">
                 <div className="w-full max-w-md text-center">
                     <div className="glass-card animate-fade-in" style={{ padding: '2.5rem 2rem' }}>
                         {/* Animated Success Icon */}
@@ -138,7 +138,7 @@ const Register = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center px-4 py-8">
             <div className="w-full max-w-lg mb-[20px]">
                 {/* Logo */}
                 <div className="text-center" style={{ marginBottom: '48px' }}>

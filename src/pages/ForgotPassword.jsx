@@ -22,7 +22,7 @@ const ForgotPassword = () => {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
+            <div className="min-h-screen flex items-center justify-center px-4">
                 <div className="w-full max-w-md text-center">
                     <div className="glass-card p-8 animate-fade-in">
                         <div
@@ -48,7 +48,7 @@ const ForgotPassword = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
+        <div className="min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">

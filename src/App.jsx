@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import DarkVeil from './components/DarkVeil';
 import { Loader2 } from 'lucide-react';
 
 // Lazy-loaded Pages (code splitting for smaller initial bundle)
@@ -16,7 +17,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 
 // Neon loading spinner fallback
 const PageLoader = () => (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] relative overflow-hidden px-4">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
         {/* Decorative background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[var(--primary)]/10 rounded-full blur-[80px]" />
         
@@ -34,9 +35,13 @@ const PageLoader = () => (
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Suspense fallback={<PageLoader />}>
+    <div className="relative min-h-screen z-0">
+      <div className="fixed inset-0 z-[-1] pointer-events-none">
+          <DarkVeil hueShift={120} noiseIntensity={0.03} scanlineIntensity={0.2} speed={0.2} warpAmount={0.04} />
+      </div>
+      <AuthProvider>
+        <BrowserRouter>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
@@ -78,6 +83,7 @@ function App() {
         </Suspense>
       </BrowserRouter>
     </AuthProvider>
+    </div>
   );
 }
 

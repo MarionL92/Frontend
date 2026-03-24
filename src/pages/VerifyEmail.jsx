@@ -7,7 +7,7 @@ import { Leaf, CheckCircle } from 'lucide-react';
 
 const VerifyEmail = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
+        <div className="min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-md text-center">
                 {/* Logo */}
                 <div

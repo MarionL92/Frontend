@@ -37,7 +37,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4">
+        <div className="min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-lg mb-[20px]">
                 {/* Logo */}
                 <div className="text-center" style={{ marginBottom: '48px' }}>

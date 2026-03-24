@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }) => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] relative overflow-hidden px-4">
+            <div className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
                 {/* Decorative background glow */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[var(--primary)]/10 rounded-full blur-[80px]" />
                 
