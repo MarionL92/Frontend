@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
     return (
         <div className="bg-[var(--bg-primary)]">
             {/* Header */}
-            <header className="fixed top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[95%] md:max-w-6xl z-50 glass-card border border-[var(--glass-border)] rounded-2xl animate-neon-border" style={{ borderBottomWidth: '2px', borderBottomColor: 'rgba(57, 255, 20, 0.35)' }}>
+            <header className="fixed top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[95%] md:max-w-6xl z-50 glass-card border border-[var(--glass-border)] rounded-2xl animate-neon-border" style={{ padding: 0, borderBottomWidth: '2px', borderBottomColor: 'rgba(57, 255, 20, 0.35)' }}>
                 <div className="container flex items-center justify-between h-16 px-6">
                     <div className="flex items-center gap-8 md:gap-[201px]">
                         {/* Logo */}
