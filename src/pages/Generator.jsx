@@ -27,7 +27,6 @@ import {
     BatteryCharging
 } from 'lucide-react';
 
-// Smart number formatting - avoids showing "0.000" when value exists but is tiny
 const formatSmallNumber = (num, decimals = 4) => {
     if (num === null || num === undefined) return '—';
     if (num === 0) return '0';
@@ -44,6 +43,23 @@ const formatEquivalence = (num) => {
     return num.toFixed(2);
 };
 
+/* ── Small stat cell inside the eco/sovereignty cards ── */
+const MetricCell = ({ icon: Icon, iconColor, value, label }) => (
+    <div
+        className="text-center rounded-xl border border-[var(--glass-border)]"
+        style={{ padding: '1rem 0.625rem', background: 'var(--bg-surface)' }}
+    >
+        <Icon
+            className="w-5 h-5 mx-auto mb-2"
+            style={{ color: iconColor, filter: `drop-shadow(0 0 3px ${iconColor}66)` }}
+        />
+        <p className="text-lg font-bold leading-none mb-1.5" style={{ color: iconColor }}>
+            {value}
+        </p>
+        <p className="text-xs text-[var(--text-muted)] leading-tight">{label}</p>
+    </div>
+);
+
 const Generator = () => {
     const [inputText, setInputText] = useState('');
     const [targetModel, setTargetModel] = useState('mistral_2');
@@ -57,11 +73,9 @@ const Generator = () => {
 
     const handleGenerate = async () => {
         if (!inputText.trim()) return;
-
         setError('');
         setIsGenerating(true);
         setResult(null);
-
         try {
             const data = await promptAPI.generate(inputText, targetModel);
             setResult(data);
@@ -89,40 +103,48 @@ const Generator = () => {
     return (
         <Layout>
             <div className="container">
-                {/* Header */}
-                <div className="text-center" style={{ marginBottom: '2rem' }}>
-                    <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wide" style={{ marginBottom: '1rem', textShadow: '0 0 15px rgba(255, 255, 255, 0.3)' }}>
+
+                {/* ── Page Header ── */}
+                <div className="text-center mb-8">
+                    <div className="neon-badge mx-auto mb-4">Optimisation de prompt</div>
+                    <h1
+                        className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-3"
+                        style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.01em' }}
+                    >
                         Générateur de Prompts
                     </h1>
-                    <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }} className="text-[var(--text-secondary)]">
-                        Transformez votre intention en prompt optimisé et mesurez votre impact environnemental.
+                    <p className="text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed">
+                        Transformez votre intention en prompt optimisé et mesurez votre impact environnemental en temps réel.
                     </p>
                 </div>
 
-                {/* Main Grid - Split Screen */}
-                <div className="grid lg:grid-cols-2" style={{ gap: '2.5rem' }}>
-                    {/* LEFT: Input Section */}
-                    <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="square-icon bg-[var(--primary)]/20">
-                                <Zap className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
+                {/* ── Main Split Grid ── */}
+                <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+
+                    {/* ══ LEFT: Input ══ */}
+                    <div className="glass-card flex flex-col gap-5">
+                        {/* Card header */}
+                        <div className="flex items-center gap-3">
+                            <div className="square-icon bg-[var(--primary)]/10 border border-[var(--primary)]/15">
+                                <Zap className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.5))' }} />
                             </div>
                             <div>
-                                <h2 className="font-semibold text-[var(--text-primary)]">Votre Intention</h2>
-                                <p className="text-sm text-[var(--text-secondary)]">Décrivez ce que vous voulez accomplir</p>
+                                <h2 className="font-semibold text-[var(--text-primary)] text-base">Votre Intention</h2>
+                                <p className="text-xs text-[var(--text-muted)]">Décrivez ce que vous voulez accomplir</p>
                             </div>
                         </div>
 
-                        {/* Text Input */}
-                        <div>
+                        {/* Textarea */}
+                        <div className="form-group">
                             <textarea
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
-                                placeholder="Ex: Je veux créer une image d'un coucher de soleil sur Mars avec des teintes orangées..."
-                                className="input-field min-h-[200px] resize-none"
+                                placeholder="Ex : Je veux créer une image d'un coucher de soleil sur Mars avec des teintes orangées…"
+                                className="input-field resize-none"
+                                style={{ minHeight: '180px', lineHeight: 1.65 }}
                                 disabled={isGenerating}
                             />
-                            <div className="flex justify-between mt-4 text-xs text-[var(--text-muted)]">
+                            <div className="flex justify-between text-xs text-[var(--text-muted)]">
                                 <span>{inputText.length} caractères</span>
                                 <span>Soyez précis pour de meilleurs résultats</span>
                             </div>
@@ -135,16 +157,17 @@ const Generator = () => {
                             disabled={isGenerating}
                         />
 
-                        {/* Generate Button */}
+                        {/* CTA */}
                         <button
                             onClick={handleGenerate}
                             disabled={!inputText.trim() || isGenerating}
-                            className="btn btn-primary w-full text-lg py-4"
+                            className="btn btn-primary w-full"
+                            style={{ paddingTop: '1rem', paddingBottom: '1rem', fontSize: '1rem' }}
                         >
                             {isGenerating ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    <span>Optimisation en cours...</span>
+                                    <span>Optimisation en cours…</span>
                                 </>
                             ) : (
                                 <>
@@ -156,255 +179,256 @@ const Generator = () => {
 
                         {/* Error */}
                         {error && (
-                            <div className="flex items-center gap-2 p-3 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/30 text-[var(--error)] text-sm animate-fade-in">
-                                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            <div className="alert alert-error animate-fade-in">
+                                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <span>{error}</span>
                             </div>
                         )}
                     </div>
 
-                    {/* RIGHT: Output Section */}
-                    <div className="glass-card space-y-5">
-                        <div className="flex items-center gap-3 mb-4" style={{ marginTop: '0.5rem' }}>
+                    {/* ══ RIGHT: Output ══ */}
+                    <div className="glass-card flex flex-col gap-5">
+                        {/* Card header */}
+                        <div className="flex items-center gap-3">
                             <div
                                 className="square-icon"
-                                style={{ backgroundColor: `${modelInfo.color}20` }}
+                                style={{ backgroundColor: `${modelInfo.color}18`, border: `1px solid ${modelInfo.color}25` }}
                             >
-                                <Check className="w-5 h-5" style={{ color: modelInfo.color, filter: `drop-shadow(0 0 4px ${modelInfo.color}80)` }} />
+                                <Sparkles className="w-5 h-5" style={{ color: modelInfo.color, filter: `drop-shadow(0 0 4px ${modelInfo.color}80)` }} />
                             </div>
                             <div>
-                                <h2 className="font-semibold text-[var(--text-primary)]">Prompt Optimisé</h2>
-                                <p className="text-sm text-[var(--text-secondary)]">Prêt à copier-coller</p>
+                                <h2 className="font-semibold text-[var(--text-primary)] text-base">Prompt Optimisé</h2>
+                                <p className="text-xs text-[var(--text-muted)]">Prêt à copier-coller</p>
                             </div>
                         </div>
 
-                        {/* Output Display */}
                         {result ? (
-                            <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                {/* Optimized Prompt */}
+                            <div className="animate-fade-in flex flex-col gap-5">
+
+                                {/* Optimized prompt box */}
                                 <div
-                                    className="relative rounded-xl bg-[var(--bg-secondary)] border-2 transition-all"
-                                    style={{ borderColor: modelInfo.color, boxShadow: `0 0 15px ${modelInfo.color}20`, padding: '1.25rem' }}
+                                    className="relative rounded-xl border-2 transition-all"
+                                    style={{
+                                        borderColor: modelInfo.color,
+                                        background: 'var(--bg-secondary)',
+                                        boxShadow: `0 0 18px ${modelInfo.color}18`,
+                                    }}
                                 >
-                                    <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed" style={{ paddingRight: '2.5rem', wordBreak: 'break-word', overflowWrap: 'break-word', maxHeight: '400px', overflowY: 'auto', margin: 0 }}>{result.optimized_prompt}</pre>
+                                    <pre
+                                        className="text-sm text-[var(--text-primary)] font-mono leading-relaxed whitespace-pre-wrap"
+                                        style={{
+                                            padding: '1.25rem 2.75rem 1.25rem 1.25rem',
+                                            wordBreak: 'break-word',
+                                            overflowWrap: 'break-word',
+                                            maxHeight: '380px',
+                                            overflowY: 'auto',
+                                            margin: 0,
+                                        }}
+                                    >
+                                        {result.optimized_prompt}
+                                    </pre>
                                     <button
                                         onClick={handleCopy}
-                                        className="absolute top-3 right-3 p-2 rounded-lg bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] transition-colors"
+                                        className="absolute top-3 right-3 p-1.5 rounded-lg transition-colors"
+                                        style={{ background: 'var(--bg-surface)' }}
                                         title="Copier"
                                     >
-                                        {copied ? (
-                                            <Check className="w-4 h-4" style={{ color: 'var(--success)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
-                                        ) : (
-                                            <Copy className="w-4 h-4 text-[var(--text-secondary)]" />
-                                        )}
+                                        {copied
+                                            ? <Check className="w-4 h-4" style={{ color: 'var(--success)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.5))' }} />
+                                            : <Copy className="w-4 h-4 text-[var(--text-secondary)]" />}
                                     </button>
                                 </div>
 
-                                {/* AI Reasoning Button */}
+                                {/* AI Reasoning toggle */}
                                 {result.ai_reasoning && (
                                     <button
                                         onClick={() => setShowReasoning(!showReasoning)}
-                                        className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors"
+                                        className="flex items-center gap-2 text-xs text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors self-start"
                                     >
-                                        <Info className="w-4 h-4" />
+                                        <Info className="w-3.5 h-3.5" />
                                         <span>Pourquoi ce résultat ?</span>
                                     </button>
                                 )}
 
-                                {/* AI Reasoning Panel */}
                                 {showReasoning && result.ai_reasoning && (
-                                    <div className="p-4 rounded-xl bg-[var(--info)]/10 border border-[var(--info)]/30 animate-fade-in">
-                                        <div className="flex items-start justify-between gap-2 mb-2">
-                                            <h4 className="font-medium text-[var(--info)]">Explication de l'IA</h4>
-                                            <button onClick={() => setShowReasoning(false)}>
-                                                <X className="w-4 h-4 text-[var(--text-muted)]" />
-                                            </button>
+                                    <div className="alert alert-info animate-fade-in relative">
+                                        <button
+                                            onClick={() => setShowReasoning(false)}
+                                            className="absolute top-2 right-2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                                            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                                        >
+                                            <X className="w-3.5 h-3.5" />
+                                        </button>
+                                        <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="font-semibold text-xs mb-1">Explication de l'IA</p>
+                                            <p className="text-xs leading-relaxed opacity-90">{result.ai_reasoning}</p>
                                         </div>
-                                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{result.ai_reasoning}</p>
                                     </div>
                                 )}
 
-                                {/* Scores Section - Full Width Cards */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                                {/* ── Eco + Sovereignty cards ── */}
+                                <div className="flex flex-col gap-4">
 
-                                    {/* ===== GREEN / ECO CARD ===== */}
+                                    {/* ECO CARD */}
                                     {result.green_data && (
-                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] p-5 lg:p-6">
-                                            <div className="flex items-center justify-between mb-5">
+                                        <div
+                                            className="rounded-xl border border-[var(--glass-border)]"
+                                            style={{ background: 'var(--bg-secondary)', padding: '1.25rem' }}
+                                        >
+                                            <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-2">
-                                                    <Leaf className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.5))' }} />
-                                                    <span className="font-semibold text-[var(--text-primary)]">Impact Écologique</span>
-                                                    <button onClick={() => setShowEcoInfo(!showEcoInfo)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors ml-1" title="Comprendre ce score">
-                                                        <Info className="w-4 h-4" />
+                                                    <Leaf className="w-4.5 h-4.5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.5))', width: '1.1rem', height: '1.1rem' }} />
+                                                    <span className="font-semibold text-sm text-[var(--text-primary)]">Impact Écologique</span>
+                                                    <button
+                                                        onClick={() => setShowEcoInfo(!showEcoInfo)}
+                                                        className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                                                    >
+                                                        <Info className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
                                                 <EcoScoreBadge score={result.green_data.eco_score} size="md" />
                                             </div>
 
                                             {showEcoInfo && (
-                                                <div className="mb-5 p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)] animate-fade-in text-sm text-[var(--text-secondary)] leading-relaxed relative">
-                                                    <button onClick={() => setShowEcoInfo(false)} className="absolute top-2 right-2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"><X className="w-3 h-3" /></button>
-                                                    <strong className="text-[var(--text-primary)] block mb-1">Pourquoi ce score ?</strong> 
-                                                    L'impact est calculé en comparant le coût énergétique de votre intention initiale avec celui du prompt optimisé, pondéré par l'efficience du modèle choisi.<br/><br/>
-                                                    <strong className="text-[var(--text-primary)] block mb-1 mt-2">Comment l'améliorer ?</strong> 
-                                                    Privilégiez les modèles plus légers pour vos tâches simples et restez le plus concis possible.
+                                                <div className="mb-4 p-3.5 rounded-xl border border-[var(--glass-border)] animate-fade-in text-xs text-[var(--text-secondary)] leading-relaxed relative" style={{ background: 'var(--bg-surface)' }}>
+                                                    <button onClick={() => setShowEcoInfo(false)} style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                    <strong className="text-[var(--text-primary)] block mb-1">Pourquoi ce score ?</strong>
+                                                    L'impact est calculé en comparant le coût énergétique de votre intention avec celui du prompt optimisé, pondéré par l'efficience du modèle.<br /><br />
+                                                    <strong className="text-[var(--text-primary)] block mb-1">Comment l'améliorer ?</strong>
+                                                    Privilégiez les modèles légers pour les tâches simples et restez concis.
                                                 </div>
                                             )}
 
-                                            {/* Key Metrics Row */}
-                                            <div className="grid grid-cols-3 gap-3 mb-5">
-                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)] p-4">
-                                                    <BatteryCharging className="w-5 h-5 mx-auto" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 3px rgba(57, 255, 20, 0.4))', marginBottom: '0.5rem' }} />
-                                                    <p className="text-xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)', lineHeight: 1.2 }}>
-                                                        {result.green_data.tokens_saved || 0}
-                                                    </p>
-                                                    <p className="text-xs text-[var(--text-muted)]" style={{ marginTop: '0.35rem' }}>tokens économisés</p>
-                                                </div>
-                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]" style={{ padding: '1rem 0.75rem' }}>
-                                                    <Leaf className="w-5 h-5 mx-auto" style={{ color: 'var(--eco-b)', filter: 'drop-shadow(0 0 3px rgba(160, 255, 0, 0.4))', marginBottom: '0.5rem' }} />
-                                                    <p className="text-xl font-bold" style={{ color: 'var(--eco-b)', textShadow: '0 0 8px rgba(160, 255, 0, 0.3)', lineHeight: 1.2 }}>
-                                                        {formatSmallNumber(result.green_data.co2_saved_g)}
-                                                    </p>
-                                                    <p className="text-xs text-[var(--text-muted)]" style={{ marginTop: '0.35rem' }}>g CO₂ évités</p>
-                                                </div>
-                                                <div className="text-center rounded-lg bg-[var(--bg-surface)] border border-[var(--glass-border)]" style={{ padding: '1rem 0.75rem' }}>
-                                                    <Droplets className="w-5 h-5 mx-auto" style={{ color: '#60a5fa', filter: 'drop-shadow(0 0 3px rgba(96, 165, 250, 0.4))', marginBottom: '0.5rem' }} />
-                                                    <p className="text-xl font-bold" style={{ color: '#60a5fa', textShadow: '0 0 8px rgba(96, 165, 250, 0.3)', lineHeight: 1.2 }}>
-                                                        {formatSmallNumber(result.green_data.water_saved_ml)}
-                                                    </p>
-                                                    <p className="text-xs text-[var(--text-muted)]" style={{ marginTop: '0.35rem' }}>mL eau épargnés</p>
-                                                </div>
+                                            <div className="grid grid-cols-3 gap-2.5 mb-4">
+                                                <MetricCell icon={BatteryCharging} iconColor="var(--primary)"  value={result.green_data.tokens_saved || 0} label="tokens économisés" />
+                                                <MetricCell icon={Leaf}            iconColor="var(--eco-b)"     value={formatSmallNumber(result.green_data.co2_saved_g)} label="g CO₂ évités" />
+                                                <MetricCell icon={Droplets}        iconColor="#60a5fa"           value={formatSmallNumber(result.green_data.water_saved_ml)} label="mL eau épargnés" />
                                             </div>
 
-                                            {/* Equivalences Row */}
                                             {result.green_data.equivalences && (
-                                                <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[var(--glass-border)]">
-                                                    <div className="flex flex-col items-center text-center gap-1.5 px-2">
-                                                        <Smartphone className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                                                        <span className="text-base font-semibold text-[var(--text-primary)]">
-                                                            {formatEquivalence(result.green_data.equivalences.smartphone_charges)}
-                                                        </span>
-                                                        <span className="text-xs text-[var(--text-muted)]">recharges</span>
-                                                    </div>
-                                                    <div className="flex flex-col items-center text-center" style={{ gap: '0.35rem' }}>
-                                                        <Car className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                                                        <span className="text-base font-semibold text-[var(--text-primary)]">
-                                                            {formatEquivalence(result.green_data.equivalences.km_electric_car)}
-                                                        </span>
-                                                        <span className="text-xs text-[var(--text-muted)]">km en VE</span>
-                                                    </div>
-                                                    <div className="flex flex-col items-center text-center" style={{ gap: '0.35rem' }}>
-                                                        <Lightbulb className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                                                        <span className="text-base font-semibold text-[var(--text-primary)]">
-                                                            {formatEquivalence(result.green_data.equivalences.hours_led_bulb)}
-                                                        </span>
-                                                        <span className="text-xs text-[var(--text-muted)]">h LED</span>
-                                                    </div>
+                                                <div
+                                                    className="grid grid-cols-3 gap-2.5 pt-4"
+                                                    style={{ borderTop: '1px solid var(--glass-border)' }}
+                                                >
+                                                    {[
+                                                        { icon: Smartphone, val: formatEquivalence(result.green_data.equivalences.smartphone_charges), label: 'recharges' },
+                                                        { icon: Car,        val: formatEquivalence(result.green_data.equivalences.km_electric_car),      label: 'km en VE' },
+                                                        { icon: Lightbulb,  val: formatEquivalence(result.green_data.equivalences.hours_led_bulb),        label: 'h LED' },
+                                                    ].map(({ icon: Icon, val, label }) => (
+                                                        <div key={label} className="flex flex-col items-center text-center gap-1">
+                                                            <Icon className="w-4 h-4 text-[var(--text-muted)]" />
+                                                            <span className="text-sm font-semibold text-[var(--text-primary)]">{val}</span>
+                                                            <span className="text-xs text-[var(--text-muted)]">{label}</span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             )}
 
-                                            {/* Source */}
                                             {result.green_data.methodology_source && (
-                                                <p className="text-[10px] text-[var(--text-muted)] mt-3 italic">
+                                                <p className="text-[10px] text-[var(--text-faint)] mt-3 italic">
                                                     {result.green_data.methodology_source}
                                                 </p>
                                             )}
                                         </div>
                                     )}
 
-                                    {/* ===== SOVEREIGNTY CARD ===== */}
+                                    {/* SOVEREIGNTY CARD */}
                                     {result.sovereignty_data && (
-                                        <div className="rounded-xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] p-5 lg:p-6">
+                                        <div
+                                            className="rounded-xl border border-[var(--glass-border)]"
+                                            style={{ background: 'var(--bg-secondary)', padding: '1.25rem' }}
+                                        >
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-2">
-                                                    <Shield className="w-5 h-5" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0, 255, 135, 0.4))' }} />
-                                                    <span className="font-semibold text-[var(--text-primary)]">Souveraineté Numérique</span>
-                                                    <button onClick={() => setShowSovInfo(!showSovInfo)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors ml-1" title="Comprendre ce score">
-                                                        <Info className="w-4 h-4" />
+                                                    <Shield className="w-4 h-4" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 4px rgba(0,255,135,0.4))' }} />
+                                                    <span className="font-semibold text-sm text-[var(--text-primary)]">Souveraineté Numérique</span>
+                                                    <button
+                                                        onClick={() => setShowSovInfo(!showSovInfo)}
+                                                        className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                                                    >
+                                                        <Info className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
-                                                <SovereigntyGauge score={result.sovereignty_data.score} size={64} />
+                                                <SovereigntyGauge score={result.sovereignty_data.score} size={60} />
                                             </div>
 
                                             {showSovInfo && (
-                                                <div className="mb-5 p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)] animate-fade-in text-sm text-[var(--text-secondary)] leading-relaxed relative">
-                                                    <button onClick={() => setShowSovInfo(false)} className="absolute top-2 right-2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"><X className="w-3 h-3" /></button>
-                                                    <strong className="text-[var(--text-primary)] block mb-1">Comment est-ce calculé ?</strong> 
-                                                    Nous analysons la localisation de l'API (Europe vs US), la licence (Libre vs Propriétaire) et le niveau de soumission aux lois extra-territoriales (ex: Cloud Act US).<br/><br/>
-                                                    <strong className="text-[var(--text-primary)] block mb-1 mt-2">Bonne pratique :</strong> 
-                                                    Pour tout traitement de données personnelles ou sensibles (RGPD), sélectionnez systématiquement un modèle européen (comme Mistral).
+                                                <div className="mb-4 p-3.5 rounded-xl border border-[var(--glass-border)] animate-fade-in text-xs text-[var(--text-secondary)] leading-relaxed relative" style={{ background: 'var(--bg-surface)' }}>
+                                                    <button onClick={() => setShowSovInfo(false)} style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                    <strong className="text-[var(--text-primary)] block mb-1">Comment est-ce calculé ?</strong>
+                                                    Localisation de l'API (Europe vs US), licence (Libre vs Propriétaire) et niveau de soumission aux lois extra-territoriales (ex : Cloud Act US).<br /><br />
+                                                    <strong className="text-[var(--text-primary)] block mb-1">Bonne pratique :</strong>
+                                                    Pour des données personnelles (RGPD), choisissez systématiquement un modèle européen (ex : Mistral).
                                                 </div>
                                             )}
 
-                                            {/* Details Grid */}
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
-                                                    <MapPin className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
-                                                    <div className="flex justify-between flex-1 min-w-0">
-                                                        <span className="text-xs text-[var(--text-muted)]">Localisation</span>
-                                                        <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data.location}</span>
+                                            <div className="flex flex-col gap-2 mb-3">
+                                                {[
+                                                    { icon: MapPin,    key: 'location',  label: 'Localisation' },
+                                                    { icon: Building2, key: 'company',   label: 'Entreprise' },
+                                                    { icon: FileKey,   key: 'license',   label: 'Licence' },
+                                                ].map(({ icon: Icon, key, label }) => (
+                                                    <div key={key} className="flex items-center gap-2.5 px-3 py-2 rounded-lg" style={{ background: 'var(--bg-surface)' }}>
+                                                        <Icon className="w-3.5 h-3.5 flex-shrink-0 text-[var(--text-muted)]" />
+                                                        <div className="flex justify-between flex-1 min-w-0">
+                                                            <span className="text-xs text-[var(--text-muted)]">{label}</span>
+                                                            <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data[key]}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
-                                                    <Building2 className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
-                                                    <div className="flex justify-between flex-1 min-w-0">
-                                                        <span className="text-xs text-[var(--text-muted)]">Entreprise</span>
-                                                        <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data.company}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-surface)]">
-                                                    <FileKey className="w-4 h-4 flex-shrink-0 text-[var(--text-muted)]" />
-                                                    <div className="flex justify-between flex-1 min-w-0">
-                                                        <span className="text-xs text-[var(--text-muted)]">Licence</span>
-                                                        <span className="text-xs font-medium text-[var(--text-primary)] truncate ml-2">{result.sovereignty_data.license}</span>
-                                                    </div>
-                                                </div>
+                                                ))}
+                                            </div>
 
-                                                {/* Cloud Act Risk / RGPD badges */}
-                                                <div className="flex flex-wrap gap-2" style={{ marginTop: '0.5rem' }}>
-                                                    {result.sovereignty_data.cloud_act_risk ? (
-                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/30">
-                                                            <ShieldAlert className="w-3.5 h-3.5 text-[var(--error)]" />
-                                                            <span className="text-xs font-medium text-[var(--error)]">Cloud Act</span>
+                                            <div className="flex flex-wrap gap-2">
+                                                {result.sovereignty_data.cloud_act_risk ? (
+                                                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/25">
+                                                        <ShieldAlert className="w-3.5 h-3.5 text-[var(--error)]" />
+                                                        <span className="text-xs font-medium text-[var(--error)]">Cloud Act</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+                                                        <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" />
+                                                        <span className="text-xs font-medium text-[var(--primary)]">Hors Cloud Act</span>
+                                                    </div>
+                                                )}
+                                                {result.sovereignty_data.rgpd_compliant !== undefined && (
+                                                    result.sovereignty_data.rgpd_compliant ? (
+                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+                                                            <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" />
+                                                            <span className="text-xs font-medium text-[var(--primary)]">RGPD</span>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/30">
-                                                            <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" />
-                                                            <span className="text-xs font-medium text-[var(--primary)]">Hors Cloud Act</span>
+                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/25">
+                                                            <ShieldAlert className="w-3.5 h-3.5 text-[var(--warning)]" />
+                                                            <span className="text-xs font-medium text-[var(--warning)]">Non RGPD</span>
                                                         </div>
-                                                    )}
-                                                    {result.sovereignty_data.rgpd_compliant !== undefined && (
-                                                        result.sovereignty_data.rgpd_compliant ? (
-                                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/30">
-                                                                <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" />
-                                                                <span className="text-xs font-medium text-[var(--primary)]">RGPD</span>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--warning)]/10 border border-[var(--warning)]/30">
-                                                                <ShieldAlert className="w-3.5 h-3.5 text-[var(--warning)]" />
-                                                                <span className="text-xs font-medium text-[var(--warning)]">Non RGPD</span>
-                                                            </div>
-                                                        )
-                                                    )}
-                                                </div>
+                                                    )
+                                                )}
                                             </div>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-16 text-center">
+                            /* Empty state */
+                            <div className="flex flex-col items-center justify-center py-16 text-center flex-1">
                                 <div
-                                    className="w-20 h-20 rounded-full bg-[var(--bg-surface)] flex items-center justify-center mb-4"
-                                    style={{ boxShadow: '0 0 30px rgba(57, 255, 20, 0.05)' }}
+                                    className="w-20 h-20 rounded-full flex items-center justify-center mb-5 animate-pulse-glow"
+                                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--glass-border)' }}
                                 >
-                                    <Sparkles className="w-10 h-10 text-[var(--text-muted)]" />
+                                    <Sparkles className="w-9 h-9 text-[var(--text-muted)]" />
                                 </div>
-                                <h3 className="text-lg font-medium text-[var(--text-secondary)] mb-2">
+                                <h3 className="text-base font-semibold text-[var(--text-secondary)] mb-2">
                                     En attente de votre intention
                                 </h3>
-                                <p className="text-sm text-[var(--text-muted)] max-w-xs">
-                                    Décrivez ce que vous voulez accomplir et laissez l'IA optimiser votre prompt
+                                <p className="text-sm text-[var(--text-muted)] max-w-[220px] leading-relaxed">
+                                    Décrivez votre besoin à gauche et laissez l'IA optimiser
                                 </p>
                             </div>
                         )}

@@ -29,7 +29,6 @@ import {
     CartesianGrid
 } from 'recharts';
 
-// Smart number formatting
 const formatValue = (num, decimals = 4) => {
     if (num === null || num === undefined) return '0';
     if (num === 0) return '0';
@@ -38,42 +37,67 @@ const formatValue = (num, decimals = 4) => {
     return num.toFixed(decimals).replace(/\.?0+$/, '') || '0';
 };
 
+/* ── Improved Stat Card ── */
 const StatCard = ({ icon: Icon, label, value, unit, color, subtitle }) => (
-    <div className="glass-card neon-hover">
-        <div className="flex items-center gap-2 mb-3">
+    <div
+        className="glass-card neon-hover flex flex-col gap-4"
+        style={{ padding: '1.5rem' }}
+    >
+        {/* Top row: icon + label */}
+        <div className="flex items-center justify-between">
             <div
                 className="square-icon"
-                style={{ backgroundColor: `${color}15` }}
+                style={{ backgroundColor: `${color}14`, border: `1px solid ${color}22` }}
             >
-                <Icon className="w-5 h-5" style={{ color, filter: `drop-shadow(0 0 4px ${color}80)` }} />
+                <Icon
+                    className="w-5 h-5"
+                    style={{ color, filter: `drop-shadow(0 0 5px ${color}70)` }}
+                />
             </div>
-            <span className="text-sm text-[var(--text-secondary)]">{label}</span>
-        </div>
-        <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold" style={{ color, textShadow: `0 0 10px ${color}40` }}>
-                {value}
+            <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide">
+                {label}
             </span>
-            {unit && <span className="text-sm text-[var(--text-muted)]">{unit}</span>}
         </div>
-        {subtitle && (
-            <p className="text-xs text-[var(--text-muted)] mt-1">{subtitle}</p>
-        )}
+
+        {/* Value */}
+        <div>
+            <div className="flex items-baseline gap-1.5 mb-1">
+                <span
+                    className="text-3xl font-bold"
+                    style={{ color, fontFamily: 'var(--font-display)', textShadow: `0 0 12px ${color}35` }}
+                >
+                    {value}
+                </span>
+                {unit && (
+                    <span className="text-sm text-[var(--text-muted)] font-medium">{unit}</span>
+                )}
+            </div>
+            {subtitle && (
+                <p className="text-xs text-[var(--text-muted)]">{subtitle}</p>
+            )}
+        </div>
+
+        {/* Accent bottom bar */}
+        <div
+            className="w-full rounded-full"
+            style={{ height: '2px', background: `linear-gradient(90deg, ${color}60, transparent)` }}
+        />
     </div>
 );
 
 const MODEL_COLORS = {
-    mistral_2: '#ff7e00',
-    gpt_5: '#74aa9c',
-    claude_opus: '#cc785c',
-    gemini_3_pro: '#4285f4',
+    mistral_2:     '#ff7e00',
+    gpt_5:         '#74aa9c',
+    claude_opus:   '#cc785c',
+    gemini_3_pro:  '#4285f4',
     midjourney_v6: '#9c5cd4',
 };
 
 const MODEL_NAMES = {
-    mistral_2: 'Mistral',
-    gpt_5: 'GPT-5',
-    claude_opus: 'Claude',
-    gemini_3_pro: 'Gemini',
+    mistral_2:     'Mistral',
+    gpt_5:         'GPT-5',
+    claude_opus:   'Claude',
+    gemini_3_pro:  'Gemini',
     midjourney_v6: 'Midjourney',
 };
 
@@ -88,20 +112,18 @@ const Dashboard = () => {
                 const data = await promptAPI.getStats();
                 setStats(data);
             } catch (err) {
-                if (err.response?.status === 403) {
-                    setError('Veuillez vérifier votre email pour accéder aux statistiques.');
-                } else {
-                    setError('Impossible de charger les statistiques.');
-                }
+                setError(
+                    err.response?.status === 403
+                        ? 'Veuillez vérifier votre email pour accéder aux statistiques.'
+                        : 'Impossible de charger les statistiques.'
+                );
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchStats();
     }, []);
 
-    // Prepare chart data
     const prepareModelUsageData = () => {
         if (!stats?.model_usage) return [];
         return Object.entries(stats.model_usage)
@@ -115,61 +137,64 @@ const Dashboard = () => {
 
     const modelUsageData = prepareModelUsageData();
     const totalPrompts = stats?.total_prompts || 0;
+    const co2 = stats?.total_co2_saved || 0;
+
+    const equivalences = {
+        smartphone: co2 > 0 ? (co2 / 8.3 * 1000) : 0,
+        car:        co2 > 0 ? (co2 / 0.05) : 0,
+        led:        co2 > 0 ? (co2 / 0.005) : 0,
+    };
 
     const CustomTooltip = ({ active, payload }) => {
-        if (active && payload && payload.length) {
-            const percentage = totalPrompts > 0 ? ((payload[0].value / totalPrompts) * 100).toFixed(0) : 0;
+        if (active && payload?.length) {
+            const pct = totalPrompts > 0 ? ((payload[0].value / totalPrompts) * 100).toFixed(0) : 0;
             return (
-                <div className="glass-card px-3 py-2 text-sm" style={{ boxShadow: 'var(--neon-glow-sm)' }}>
+                <div className="glass-card px-3 py-2 text-sm" style={{ boxShadow: 'var(--neon-glow-sm)', padding: '0.5rem 0.875rem' }}>
                     <p className="text-[var(--text-primary)] font-medium">{payload[0].name}</p>
-                    <p className="text-[var(--text-secondary)]">{payload[0].value} prompts ({percentage}%)</p>
+                    <p className="text-[var(--text-secondary)] text-xs">{payload[0].value} prompts ({pct}%)</p>
                 </div>
             );
         }
         return null;
     };
 
-    // Calculate equivalences from total CO2
-    const co2 = stats?.total_co2_saved || 0;
-    const equivalences = {
-        smartphone: co2 > 0 ? (co2 / 8.3 * 1000) : 0,
-        car: co2 > 0 ? (co2 / 0.05) : 0,
-        led: co2 > 0 ? (co2 / 0.005) : 0,
-    };
-
     return (
         <Layout>
             <div className="container">
-                {/* Header */}
-                <div className="flex items-center gap-5 mb-10">
+
+                {/* ── Page Header ── */}
+                <div className="flex items-center gap-4 mb-10">
                     <div
-                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
+                        className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
                     >
-                        <BarChart3 className="w-7 h-7 text-[var(--bg-primary)]" />
+                        <BarChart3 className="w-6 h-6 text-[var(--bg-primary)]" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Dashboard</h1>
-                        <p className="text-[var(--text-secondary)]">Vue d'ensemble de votre impact</p>
+                        <h1 className="page-title">Dashboard</h1>
+                        <p className="page-subtitle" style={{ marginTop: '0.2rem' }}>Vue d'ensemble de votre impact environnemental</p>
                     </div>
                 </div>
 
-                {/* Content */}
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] py-16">
-                        <Loader2 className="w-10 h-10 animate-spin mb-4" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57, 255, 20, 0.5))' }} />
-                        <p className="text-[var(--text-secondary)]">Chargement des statistiques...</p>
+                    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+                        <Loader2
+                            className="w-10 h-10 animate-spin"
+                            style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57,255,20,0.5))' }}
+                        />
+                        <p className="text-[var(--text-secondary)]">Chargement des statistiques…</p>
                     </div>
                 ) : error ? (
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] py-16 text-center">
-                        <div className="w-16 h-16 rounded-full bg-[var(--error)]/20 flex items-center justify-center mb-4">
-                            <AlertCircle className="w-8 h-8 text-[var(--error)]" />
+                    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
+                        <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,23,68,0.1)' }}>
+                            <AlertCircle className="w-7 h-7 text-[var(--error)]" />
                         </div>
                         <p className="text-[var(--text-secondary)]">{error}</p>
                     </div>
                 ) : (
                     <div className="flex flex-col gap-8 animate-fade-in">
-                        {/* Stats Grid */}
+
+                        {/* ── Stat Cards ── */}
                         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             <StatCard
                                 icon={Zap}
@@ -200,51 +225,49 @@ const Dashboard = () => {
                             />
                         </div>
 
-                        {/* Charts Row */}
-                        <div className="grid lg:grid-cols-2 gap-8">
-                            {/* Model Usage Pie Chart */}
-                            <div className="glass-card neon-hover">
-                                <div className="flex items-center gap-3 mb-5">
-                                    <PieChart className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
-                                    <h3 className="font-semibold text-[var(--text-primary)]">
-                                        Répartition par modèle
-                                    </h3>
+                        {/* ── Charts Row ── */}
+                        <div className="grid lg:grid-cols-2 gap-6">
+
+                            {/* Pie Chart */}
+                            <div className="glass-card neon-hover" style={{ padding: '1.5rem' }}>
+                                <div className="flex items-center gap-2.5 mb-5">
+                                    <PieChart
+                                        className="w-4.5 h-4.5"
+                                        style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.4))', width: '1.1rem', height: '1.1rem' }}
+                                    />
+                                    <h3 className="font-semibold text-[var(--text-primary)] text-sm">Répartition par modèle</h3>
                                 </div>
 
                                 {modelUsageData.length > 0 ? (
                                     <div>
-                                        <div className="h-56">
+                                        <div className="h-52">
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <RechartsPie>
                                                     <Pie
                                                         data={modelUsageData}
-                                                        cx="50%"
-                                                        cy="50%"
-                                                        innerRadius={55}
-                                                        outerRadius={80}
+                                                        cx="50%" cy="50%"
+                                                        innerRadius={52} outerRadius={78}
                                                         paddingAngle={4}
                                                         dataKey="value"
                                                         strokeWidth={0}
                                                     >
-                                                        {modelUsageData.map((entry, index) => (
-                                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                                        {modelUsageData.map((entry, i) => (
+                                                            <Cell key={`cell-${i}`} fill={entry.color} />
                                                         ))}
                                                     </Pie>
                                                     <Tooltip content={<CustomTooltip />} />
                                                 </RechartsPie>
                                             </ResponsiveContainer>
                                         </div>
-
-                                        {/* Legend with percentages */}
                                         <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-3">
-                                            {modelUsageData.map((item, index) => (
-                                                <div key={index} className="flex items-center gap-2 text-sm">
+                                            {modelUsageData.map((item, i) => (
+                                                <div key={i} className="flex items-center gap-2 text-xs">
                                                     <div
-                                                        className="w-3 h-3 rounded-full flex-shrink-0"
+                                                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                                         style={{ backgroundColor: item.color, boxShadow: `0 0 6px ${item.color}60` }}
                                                     />
                                                     <span className="text-[var(--text-secondary)]">{item.name}</span>
-                                                    <span className="text-[var(--text-muted)] text-xs">
+                                                    <span className="text-[var(--text-muted)]">
                                                         ({totalPrompts > 0 ? ((item.value / totalPrompts) * 100).toFixed(0) : 0}%)
                                                     </span>
                                                 </div>
@@ -252,107 +275,121 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="h-56 flex flex-col items-center justify-center text-[var(--text-muted)]">
-                                        <PieChart className="w-10 h-10 mb-2 opacity-20" />
+                                    <div className="h-52 flex flex-col items-center justify-center text-[var(--text-muted)] gap-2">
+                                        <PieChart className="w-10 h-10 opacity-15" />
                                         <p className="text-sm">Aucune donnée disponible</p>
-                                        <p className="text-xs mt-1">Générez votre premier prompt !</p>
+                                        <p className="text-xs">Générez votre premier prompt !</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Bar Chart */}
-                            <div className="glass-card neon-hover">
-                                <div className="flex items-center gap-3 mb-5">
-                                    <BarChart3 className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57, 255, 20, 0.4))' }} />
-                                    <h3 className="font-semibold text-[var(--text-primary)]">
-                                        Utilisation par modèle
-                                    </h3>
+                            <div className="glass-card neon-hover" style={{ padding: '1.5rem' }}>
+                                <div className="flex items-center gap-2.5 mb-5">
+                                    <BarChart3
+                                        className="w-4.5 h-4.5"
+                                        style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.4))', width: '1.1rem', height: '1.1rem' }}
+                                    />
+                                    <h3 className="font-semibold text-[var(--text-primary)] text-sm">Utilisation par modèle</h3>
                                 </div>
 
                                 {modelUsageData.length > 0 ? (
-                                    <div className="h-56">
+                                    <div className="h-52">
                                         <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={modelUsageData} layout="vertical" margin={{ left: 10 }}>
-                                                <CartesianGrid
-                                                    strokeDasharray="3 3"
-                                                    stroke="var(--glass-border)"
-                                                    horizontal={false}
-                                                />
-                                                <XAxis
-                                                    type="number"
-                                                    tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
-                                                    allowDecimals={false}
-                                                />
-                                                <YAxis
-                                                    dataKey="name"
-                                                    type="category"
-                                                    width={80}
-                                                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
-                                                />
+                                            <BarChart data={modelUsageData} layout="vertical" margin={{ left: 8, right: 8 }}>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(57,255,20,0.08)" horizontal={false} />
+                                                <XAxis type="number" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} allowDecimals={false} axisLine={false} tickLine={false} />
+                                                <YAxis dataKey="name" type="category" width={72} tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} axisLine={false} tickLine={false} />
                                                 <Tooltip content={<CustomTooltip />} />
-                                                <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28}>
-                                                    {modelUsageData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={24}>
+                                                    {modelUsageData.map((entry, i) => (
+                                                        <Cell key={`cell-${i}`} fill={entry.color} />
                                                     ))}
                                                 </Bar>
                                             </BarChart>
                                         </ResponsiveContainer>
                                     </div>
                                 ) : (
-                                    <div className="h-56 flex flex-col items-center justify-center text-[var(--text-muted)]">
-                                        <BarChart3 className="w-10 h-10 mb-2 opacity-20" />
+                                    <div className="h-52 flex flex-col items-center justify-center text-[var(--text-muted)] gap-2">
+                                        <BarChart3 className="w-10 h-10 opacity-15" />
                                         <p className="text-sm">Aucune donnée disponible</p>
-                                        <p className="text-xs mt-1">Générez votre premier prompt !</p>
+                                        <p className="text-xs">Générez votre premier prompt !</p>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* Impact Summary */}
-                        <div className="glass-card">
-                            <div className="flex items-center gap-3 mb-8">
-                                <Globe className="w-6 h-6" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.5))' }} />
-                                <h3 className="text-xl font-bold text-[var(--text-primary)]">
+                        {/* ── Environmental Impact ── */}
+                        <div className="glass-card" style={{ padding: '1.75rem' }}>
+                            <div className="flex items-center gap-3 mb-7">
+                                <Globe
+                                    className="w-5 h-5"
+                                    style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57,255,20,0.5))' }}
+                                />
+                                <h3 className="text-lg font-bold text-[var(--text-primary)]">
                                     Votre Impact Environnemental
                                 </h3>
                             </div>
 
                             {totalPrompts > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                                    <div className="p-6 lg:p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center neon-hover">
-                                        <Smartphone className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.4))' }} />
-                                        <p className="text-2xl font-bold" style={{ color: 'var(--primary)', textShadow: '0 0 8px rgba(57, 255, 20, 0.3)' }}>
-                                            {formatValue(equivalences.smartphone, 2)}
-                                        </p>
-                                        <p className="text-sm text-[var(--text-muted)] mt-2">recharges smartphone</p>
-                                    </div>
-                                    <div className="p-6 lg:p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center neon-hover">
-                                        <Car className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--accent)', filter: 'drop-shadow(0 0 6px rgba(0, 255, 135, 0.4))' }} />
-                                        <p className="text-2xl font-bold" style={{ color: 'var(--accent)', textShadow: '0 0 8px rgba(0, 255, 135, 0.3)' }}>
-                                            {formatValue(equivalences.car, 2)}
-                                        </p>
-                                        <p className="text-sm text-[var(--text-muted)] mt-2">mètres en voiture électrique</p>
-                                    </div>
-                                    <div className="p-6 lg:p-8 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--glass-border)] text-center neon-hover">
-                                        <Lightbulb className="w-8 h-8 mx-auto mb-3" style={{ color: '#ffdd00', filter: 'drop-shadow(0 0 6px rgba(255, 221, 0, 0.4))' }} />
-                                        <p className="text-2xl font-bold" style={{ color: '#ffdd00', textShadow: '0 0 8px rgba(255, 221, 0, 0.3)' }}>
-                                            {formatValue(equivalences.led, 2)}
-                                        </p>
-                                        <p className="text-sm text-[var(--text-muted)] mt-2">heures d'éclairage LED</p>
-                                    </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                                    {[
+                                        {
+                                            icon: Smartphone,
+                                            color: 'var(--primary)',
+                                            glow: 'rgba(57,255,20,0.4)',
+                                            value: formatValue(equivalences.smartphone, 2),
+                                            label: 'recharges smartphone',
+                                        },
+                                        {
+                                            icon: Car,
+                                            color: 'var(--accent)',
+                                            glow: 'rgba(0,255,135,0.4)',
+                                            value: formatValue(equivalences.car, 2),
+                                            label: 'mètres en voiture électrique',
+                                        },
+                                        {
+                                            icon: Lightbulb,
+                                            color: '#ffdd00',
+                                            glow: 'rgba(255,221,0,0.4)',
+                                            value: formatValue(equivalences.led, 2),
+                                            label: "heures d'éclairage LED",
+                                        },
+                                    ].map(({ icon: Icon, color, glow, value, label }) => (
+                                        <div
+                                            key={label}
+                                            className="rounded-2xl border border-[var(--glass-border)] text-center neon-hover"
+                                            style={{ background: 'var(--bg-secondary)', padding: '1.75rem 1.25rem' }}
+                                        >
+                                            <div
+                                                className="w-12 h-12 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                                                style={{ background: `${color}12`, border: `1px solid ${color}20` }}
+                                            >
+                                                <Icon className="w-6 h-6" style={{ color, filter: `drop-shadow(0 0 6px ${glow})` }} />
+                                            </div>
+                                            <p
+                                                className="text-2xl font-bold mb-2"
+                                                style={{ color, textShadow: `0 0 10px ${glow}`, fontFamily: 'var(--font-display)' }}
+                                            >
+                                                {value}
+                                            </p>
+                                            <p className="text-sm text-[var(--text-muted)]">{label}</p>
+                                        </div>
+                                    ))}
                                 </div>
                             ) : (
-                                <div className="text-center py-8">
-                                    <Globe className="w-12 h-12 mx-auto mb-3 opacity-20 text-[var(--text-muted)]" />
-                                    <p className="text-sm text-[var(--text-muted)]">
+                                <div className="text-center py-10">
+                                    <Globe className="w-12 h-12 mx-auto mb-3 opacity-15 text-[var(--text-muted)]" />
+                                    <p className="text-sm text-[var(--text-muted)] mb-1">
                                         Vos équivalences environnementales apparaîtront ici
                                     </p>
-                                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                                    <p className="text-xs text-[var(--text-faint)]">
                                         Chaque prompt optimisé contribue à réduire votre empreinte carbone
                                     </p>
                                 </div>
                             )}
                         </div>
+
                     </div>
                 )}
             </div>

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -34,6 +34,12 @@ const PageLoader = () => (
 );
 
 function App() {
+  // Warm up backend (Render free tier cold start mitigation)
+  useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+    fetch(`${API_URL}/health`).catch(() => {});
+  }, []);
+
   return (
     <div className="relative min-h-screen z-0">
       <div className="fixed inset-0 z-[-1] pointer-events-none opacity-30 mix-blend-screen transition-opacity duration-1000">

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { authAPI, setAccessToken, clearTokens } from '../services/api';
 
 const AuthContext = createContext(null);
@@ -12,30 +12,50 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // Optimistic state initialization for immediate UI response
+    const [user, setUser] = useState(() => {
+        const saved = localStorage.getItem('user_info');
+        try { return saved ? JSON.parse(saved) : null; } catch { return null; }
+    });
+    const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('access_token'));
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Guard to prevent double-execution in React Strict Mode
+    const isRestoringRef = useRef(false);
+
     // Check for existing session on mount
     useEffect(() => {
+        if (isRestoringRef.current) return;
+
         const refreshToken = localStorage.getItem('refresh_token');
-        if (refreshToken) {
+        const accessToken = localStorage.getItem('access_token');
+        
+        if (accessToken) {
+            // We have an access token, let's start the app while verifying in background
+            setIsLoading(false);
+            restoreSession(true); // background verify
+        } else if (refreshToken) {
             restoreSession();
         } else {
             setIsLoading(false);
         }
     }, []);
 
-    const restoreSession = async () => {
+    const restoreSession = async (background = false) => {
+        if (isRestoringRef.current && !background) return;
+        isRestoringRef.current = true;
+        
         try {
             const refreshToken = localStorage.getItem('refresh_token');
+            
             if (!refreshToken) {
                 setIsLoading(false);
                 return;
             }
 
-            // V5: /auth/refresh
+            // If we are in background and have a token, we might not need a full refresh immediately
+            // But let's verify connectivity and session state
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/refresh`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -48,19 +68,24 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('refresh_token', data.refresh_token);
                 setIsAuthenticated(true);
 
-                // Fetch user info with the new token
-                try {
-                    const meResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/me`, {
-                        headers: { 'Authorization': `Bearer ${data.access_token}` },
-                    });
-                    if (meResponse.ok) {
-                        const userData = await meResponse.json();
-                        setUser({ email: userData.email, id: userData.id, authenticated: true });
-                    } else {
-                        setUser({ authenticated: true });
+                // Fetch user info in background (optimistic: skip if we have user info and it's background)
+                const savedUser = localStorage.getItem('user_info');
+                if (!background || !savedUser) {
+                    try {
+                        const meResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/me`, {
+                            headers: { 'Authorization': `Bearer ${data.access_token}` },
+                        });
+                        if (meResponse.ok) {
+                            const userData = await meResponse.json();
+                            const fullUser = { email: userData.email, id: userData.id, authenticated: true };
+                            setUser(fullUser);
+                            localStorage.setItem('user_info', JSON.stringify(fullUser));
+                        } else if (!savedUser) {
+                            setUser({ authenticated: true });
+                        }
+                    } catch {
+                        if (!savedUser) setUser({ authenticated: true });
                     }
-                } catch {
-                    setUser({ authenticated: true });
                 }
             } else {
                 clearTokens();
@@ -69,11 +94,15 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (err) {
             console.error('Session restore failed:', err);
-            clearTokens();
-            setIsAuthenticated(false);
-            setUser(null);
+            // Only clear tokens if it's a definitive auth error, not a network error during cold start
+            if (err.message && err.message.includes('401')) {
+                clearTokens();
+                setIsAuthenticated(false);
+                setUser(null);
+            }
         } finally {
             setIsLoading(false);
+            isRestoringRef.current = false;
         }
     };
 
@@ -90,11 +119,13 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('refresh_token', data.refresh_token);
 
             setIsAuthenticated(true);
-            setUser({
+            const userInfo = {
                 email: data.user?.email || email,
                 id: data.user?.id,
                 authenticated: true,
-            });
+            };
+            setUser(userInfo);
+            localStorage.setItem('user_info', JSON.stringify(userInfo));
 
             return { success: true };
         } catch (err) {

@@ -6,23 +6,31 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 // Create Axios instance
 const api = axios.create({
     baseURL: API_BASE_URL,
+    timeout: 60000, // 60s timeout to handle long Render cold starts
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Token management (in-memory for access token)
-let accessToken = null;
+// Token management (persisted for performance)
+let accessToken = localStorage.getItem('access_token');
 
 export const setAccessToken = (token) => {
     accessToken = token;
+    if (token) {
+        localStorage.setItem('access_token', token);
+    } else {
+        localStorage.removeItem('access_token');
+    }
 };
 
 export const getAccessToken = () => accessToken;
 
 export const clearTokens = () => {
     accessToken = null;
+    localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_info');
 };
 
 // Request Interceptor: Attach Access Token

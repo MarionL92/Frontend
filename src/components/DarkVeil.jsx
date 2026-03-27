@@ -127,7 +127,7 @@ export default function DarkVeil({
     window.addEventListener('resize', resize);
     resize();
     // Re-verify after mount for frameworks like React 18 strict mode
-    setTimeout(resize, 100);
+    const timeoutId = setTimeout(resize, 100);
 
     const start = performance.now();
     let frame = 0;
@@ -148,7 +148,7 @@ export default function DarkVeil({
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
-      renderer.remove();
+      clearTimeout(timeoutId);
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
   
