@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { promptAPI } from '../services/api';
 import Layout from '../components/Layout';
+import Skeleton from '../components/Skeleton';
 import { getModelInfo } from '../components/ModelSelector';
 import {
     History as HistoryIcon,
-    Loader2,
     AlertCircle,
     Calendar,
     ChevronDown,
@@ -15,7 +15,9 @@ import {
     Lightbulb,
     Shield,
     BatteryCharging,
-    Sparkles
+    Sparkles,
+    Search,
+    X
 } from 'lucide-react';
 
 const getEcoColor = (score) => {
@@ -81,7 +83,7 @@ const HistoryItem = ({ item, index }) => {
             {/* ── Header row — always visible ── */}
             <div
                 className="flex items-center gap-4 cursor-pointer select-none"
-                style={{ padding: '1.1rem 1.25rem' }}
+                style={{ padding: '0.875rem 1.25rem' }}
                 onClick={() => setExpanded(!expanded)}
             >
                 {/* Eco + sovereignty badges */}
@@ -110,7 +112,7 @@ const HistoryItem = ({ item, index }) => {
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                         {/* Model badge */}
                         <span
-                            className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold tracking-wide uppercase flex-shrink-0"
+                            className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase flex-shrink-0"
                             style={{
                                 backgroundColor: `${modelInfo.color}14`,
                                 color: modelInfo.color,
@@ -120,7 +122,7 @@ const HistoryItem = ({ item, index }) => {
                             {modelInfo.name}
                         </span>
                         {/* Date */}
-                        <span className="flex items-center gap-1 text-xs text-[var(--text-muted)] flex-shrink-0">
+                        <span className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] flex-shrink-0">
                             <Calendar className="w-3 h-3" />
                             {formatDate(item.created_at)}
                         </span>
@@ -133,6 +135,7 @@ const HistoryItem = ({ item, index }) => {
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
                             wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
                         }}
                     >
                         {item.original_intent}
@@ -270,6 +273,7 @@ const HistoryItem = ({ item, index }) => {
 const History = () => {
     const [history, setHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -290,12 +294,22 @@ const History = () => {
         fetchHistory();
     }, []);
 
+    const filteredHistory = useMemo(() => {
+        if (!searchTerm.trim()) return history;
+        const lowSearch = searchTerm.toLowerCase();
+        return history.filter(item => 
+            item.original_intent?.toLowerCase().includes(lowSearch) || 
+            item.optimized_prompt?.toLowerCase().includes(lowSearch) ||
+            item.target_model?.toLowerCase().includes(lowSearch)
+        );
+    }, [history, searchTerm]);
+
     return (
         <Layout>
             <div className="container max-w-4xl">
 
                 {/* ── Header ── */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-9">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
                     <div className="flex items-center gap-4">
                         <div
                             className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
@@ -309,33 +323,65 @@ const History = () => {
                         </div>
                     </div>
 
-                    {history.length > 0 && (
-                        <div
-                            className="flex items-center gap-2 px-4 py-2 rounded-full self-start sm:self-auto flex-shrink-0"
-                            style={{
-                                background: 'var(--bg-surface)',
-                                border: '1px solid var(--glass-border)',
-                            }}
-                        >
-                            <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-                            <span className="text-sm font-semibold text-[var(--text-primary)] whitespace-nowrap">
-                                {history.length} prompt{history.length > 1 ? 's' : ''}
-                            </span>
+                    <div className="flex items-center gap-3">
+                        {/* Search bar */}
+                        <div className="relative group">
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
+                            <input 
+                                type="text"
+                                placeholder="Rechercher..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="bg-[var(--bg-surface)] border border-[var(--glass-border)] rounded-full py-2 pl-10 pr-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all w-full sm:w-64"
+                            />
+                            {searchTerm && (
+                                <button 
+                                    onClick={() => setSearchTerm('')}
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-[var(--bg-secondary)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
+                            )}
                         </div>
-                    )}
+
+                        {history.length > 0 && (
+                            <div
+                                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full flex-shrink-0"
+                                style={{
+                                    background: 'var(--bg-surface)',
+                                    border: '1px solid var(--glass-border)',
+                                }}
+                            >
+                                <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                                <span className="text-sm font-semibold text-[var(--text-primary)]">
+                                    {history.length}
+                                </span>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* ── Content ── */}
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                        <Loader2
-                            className="w-10 h-10 animate-spin"
-                            style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57,255,20,0.5))' }}
-                        />
-                        <p className="text-[var(--text-secondary)]">Chargement de l'historique…</p>
+                    <div className="flex flex-col gap-4 animate-fade-in">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                            <div key={i} className="glass-card" style={{ padding: 0 }}>
+                                <div className="flex items-center gap-4" style={{ padding: '0.875rem 1.25rem' }}>
+                                    <Skeleton width="2rem" height="2rem" borderRadius="6px" />
+                                    <div className="flex-1">
+                                        <div className="flex gap-4 mb-2">
+                                            <Skeleton width="5rem" height="0.65rem" />
+                                            <Skeleton width="8rem" height="0.65rem" />
+                                        </div>
+                                        <Skeleton width="100%" height="0.875rem" />
+                                    </div>
+                                    <Skeleton width="1.25rem" height="1.25rem" borderRadius="4px" />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ) : error ? (
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
+                    <div className="flex flex-col items-center justify-center min-h-[50vh] text-center gap-4">
                         <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,23,68,0.1)' }}>
                             <AlertCircle className="w-7 h-7 text-[var(--error)]" />
                         </div>
@@ -354,9 +400,15 @@ const History = () => {
                             Commencez à générer des prompts pour voir votre historique ici
                         </p>
                     </div>
+                ) : filteredHistory.length === 0 ? (
+                    <div className="text-center py-20">
+                        <Search className="w-12 h-12 mx-auto mb-4 opacity-10" />
+                        <p className="text-[var(--text-secondary)] font-medium">Aucun résultat pour "{searchTerm}"</p>
+                        <button onClick={() => setSearchTerm('')} className="text-[var(--primary)] text-sm mt-2 hover:underline">Réinitialiser la recherche</button>
+                    </div>
                 ) : (
-                    <div className="flex flex-col gap-3.5">
-                        {history.map((item, index) => (
+                    <div className="flex flex-col gap-4">
+                        {filteredHistory.map((item, index) => (
                             <HistoryItem key={item.id} item={item} index={index} />
                         ))}
                     </div>
@@ -367,3 +419,4 @@ const History = () => {
 };
 
 export default History;
+

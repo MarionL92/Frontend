@@ -1,43 +1,68 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Leaf, Mail, Loader2, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Leaf, Mail, Loader2, ArrowLeft, Zap, Shield, AlertCircle } from 'lucide-react';
+
+/* ── Left panel feature list (same as Login/Register) ── */
+const features = [
+    {
+        icon: Zap,
+        label: 'Optimisation IA',
+        desc: 'Prompts plus précis, moins de tokens consommés',
+    },
+    {
+        icon: Leaf,
+        label: 'Mesure CO₂ en temps réel',
+        desc: "Calculez l'empreinte carbone de chaque requête",
+    },
+    {
+        icon: Shield,
+        label: 'Souveraineté numérique',
+        desc: 'Modèles européens & conformité RGPD garantie',
+    },
+];
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
-
+    const [error, setError] = useState('');
     const { forgotPassword } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         setIsSubmitting(true);
-
-        await forgotPassword(email);
-        setSuccess(true);
-
+        const result = await forgotPassword(email);
+        if (result.success) {
+            setSuccess(true);
+        } else {
+            setError(result.error || 'Une erreur est survenue. Veuillez réessayer.');
+        }
         setIsSubmitting(false);
     };
 
+    /* ── Success screen ── */
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center px-4">
-                <div className="w-full max-w-md text-center">
-                    <div className="glass-card p-8 animate-fade-in">
+            <div className="min-h-screen flex items-center justify-center px-6">
+                <div className="w-full max-w-md animate-fade-in">
+                    <div className="glass-card text-center" style={{ padding: '2.5rem 2rem' }}>
                         <div
-                            className="w-16 h-16 rounded-full bg-[var(--success)]/20 flex items-center justify-center mx-auto mb-4"
-                            style={{ boxShadow: '0 0 20px rgba(57, 255, 20, 0.3)' }}
+                            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(57,255,20,0.12), rgba(0,255,135,0.08))',
+                                boxShadow: '0 0 32px rgba(57,255,20,0.2), 0 0 64px rgba(57,255,20,0.08)',
+                                animation: 'pulse-glow 2s ease-in-out infinite',
+                            }}
                         >
-                            <CheckCircle className="w-8 h-8" style={{ color: 'var(--success)', filter: 'drop-shadow(0 0 6px rgba(57, 255, 20, 0.5))' }} />
+                            <Mail className="w-9 h-9" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57,255,20,0.6))' }} />
                         </div>
-                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                            Email envoyé !
-                        </h2>
-                        <p className="text-[var(--text-secondary)] mb-6">
-                            Si un compte existe avec cette adresse, vous recevrez un lien pour réinitialiser votre mot de passe.
+                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">Email envoyé !</h2>
+                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
+                            Si un compte existe avec cette adresse, vous recevrez un lien pour réinitialiser votre mot de passe dans quelques minutes.
                         </p>
-                        <Link to="/login" className="btn btn-secondary">
+                        <Link to="/login" className="btn btn-secondary w-full">
                             <ArrowLeft className="w-4 h-4" />
                             <span>Retour à la connexion</span>
                         </Link>
@@ -48,72 +73,190 @@ const ForgotPassword = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4">
-            <div className="w-full max-w-md">
-                {/* Logo */}
-                <div className="text-center mb-8">
-                    <div
-                        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4"
-                        style={{ boxShadow: 'var(--neon-glow-lg)' }}
-                    >
-                        <Leaf className="w-8 h-8 text-[var(--bg-primary)]" />
+        <div className="min-h-screen flex">
+
+            {/* ════════════════════════════════
+                LEFT — Brand panel (desktop only)
+                ════════════════════════════════ */}
+            <div
+                className="hidden lg:flex lg:w-[44%] xl:w-[42%] relative flex-col justify-between overflow-hidden"
+                style={{ background: 'var(--bg-secondary)', padding: '3rem 3.5rem 3rem 5rem' }}
+            >
+                {/* Dot-grid texture */}
+                <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(57,255,20,0.08) 1px, transparent 0)',
+                        backgroundSize: '28px 28px',
+                    }}
+                />
+                {/* Ambient top-right glow */}
+                <div
+                    className="absolute -top-24 -right-24 pointer-events-none"
+                    style={{
+                        width: '360px',
+                        height: '360px',
+                        background: 'radial-gradient(circle, rgba(57,255,20,0.06) 0%, transparent 70%)',
+                    }}
+                />
+                {/* Right border glow line */}
+                <div
+                    className="absolute top-0 right-0 h-full pointer-events-none"
+                    style={{
+                        width: '1px',
+                        background: 'linear-gradient(180deg, transparent, rgba(57,255,20,0.25) 40%, rgba(57,255,20,0.25) 60%, transparent)',
+                    }}
+                />
+
+                {/* Top — Logo */}
+                <div className="relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div
+                            className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center"
+                            style={{ boxShadow: 'var(--neon-glow-sm)' }}
+                        >
+                            <Leaf className="w-5 h-5 text-[var(--bg-primary)]" />
+                        </div>
+                        <span className="text-base font-bold text-[var(--text-primary)]" style={{ fontFamily: 'var(--font-display)' }}>
+                            PromptOptim
+                        </span>
                     </div>
-                    <h1 className="text-2xl font-bold gradient-text">Mot de passe oublié</h1>
-                    <p className="text-[var(--text-secondary)] mt-2">
-                        Entrez votre email pour recevoir un lien de réinitialisation
-                    </p>
                 </div>
 
-                {/* Form Card */}
-                <div className="glass-card p-8">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        {/* Email */}
-                        <div>
-                            <label htmlFor="email" className="input-label">
-                                Email
-                            </label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
-                                <input
-                                    id="email"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="votre@email.com"
-                                    className="input-field has-icon-left"
-                                    required
-                                    autoComplete="email"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="btn btn-primary w-full"
+                {/* Middle — Copy + Features */}
+                <div className="relative z-10 flex flex-col gap-10">
+                    <div>
+                        <div className="neon-badge mb-5">Récupération de compte</div>
+                        <h2
+                            className="text-3xl xl:text-4xl font-bold text-[var(--text-primary)] leading-tight mb-4"
+                            style={{ fontFamily: 'var(--font-display)' }}
                         >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                    <span>Envoi...</span>
-                                </>
-                            ) : (
-                                <span>Envoyer le lien</span>
-                            )}
-                        </button>
-                    </form>
+                            Mot de passe<br />
+                            <span className="gradient-text">oublié ?</span>
+                        </h2>
+                        <p className="text-[var(--text-secondary)] leading-relaxed max-w-xs text-sm">
+                            Pas de panique. Entrez votre email et nous vous enverrons un lien sécurisé pour réinitialiser votre accès.
+                        </p>
+                    </div>
 
-                    {/* Back Link */}
-                    <div className="mt-6 text-center">
+                    <div className="flex flex-col gap-5">
+                        {features.map(({ icon: Icon, label, desc }, i) => (
+                            <div key={label} className="flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: `${i * 80}ms` }}>
+                                <div
+                                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                                    style={{
+                                        background: 'rgba(57,255,20,0.1)',
+                                        border: '1px solid rgba(57,255,20,0.18)',
+                                    }}
+                                >
+                                    <Icon className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-[var(--text-primary)] mb-0.5">{label}</p>
+                                    <p className="text-xs text-[var(--text-muted)] leading-relaxed">{desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Bottom — Copyright */}
+                <p className="relative z-10 text-xs text-[var(--text-faint)]">
+                    © 2025 PromptOptim — Green IT
+                </p>
+            </div>
+
+            {/* ════════════════════════════════
+                RIGHT — Form panel
+                ════════════════════════════════ */}
+            <div className="flex-1 flex items-center justify-center px-6 py-12 lg:py-0">
+                <div className="w-full max-w-md animate-fade-in">
+
+                    {/* Mobile-only logo */}
+                    <div className="text-center mb-8 lg:hidden">
+                        <div
+                            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] mb-4"
+                            style={{ boxShadow: 'var(--neon-glow-lg)' }}
+                        >
+                            <Leaf className="w-7 h-7 text-[var(--bg-primary)]" />
+                        </div>
+                        <h1 className="text-2xl font-bold gradient-text">PromptOptim</h1>
+                    </div>
+
+                    {/* Heading */}
+                    <div className="mb-7">
+                        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1.5">
+                            Mot de passe oublié
+                        </h1>
+                        <p className="text-sm text-[var(--text-secondary)]">
+                            Entrez votre email pour recevoir un lien de réinitialisation
+                        </p>
+                    </div>
+
+                    {/* Card */}
+                    <div className="glass-card">
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+                            {/* Error */}
+                            {error && (
+                                <div className="alert alert-error animate-fade-in">
+                                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                    <span>{error}</span>
+                                </div>
+                            )}
+
+                            {/* Email */}
+                            <div className="form-group">
+                                <label htmlFor="email" className="input-label">Email</label>
+                                <div className="input-wrapper">
+                                    <Mail className="input-icon-left" />
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="votre@email.com"
+                                        className="input-field has-icon-left"
+                                        required
+                                        autoComplete="email"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Submit */}
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="btn btn-primary w-full"
+                                style={{ paddingTop: '0.9rem', paddingBottom: '0.9rem', marginTop: '0.25rem', fontSize: '0.9375rem' }}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span>Envoi en cours…</span>
+                                    </>
+                                ) : (
+                                    <span>Envoyer le lien</span>
+                                )}
+                            </button>
+                        </form>
+
+                        <div className="neon-divider" style={{ margin: '1.25rem 0' }} />
+
                         <Link
                             to="/login"
-                            className="inline-flex items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)]"
+                            className="flex items-center justify-center gap-1.5 text-sm font-medium transition-colors"
+                            style={{ color: 'var(--primary)' }}
                         >
                             <ArrowLeft className="w-4 h-4" />
                             <span>Retour à la connexion</span>
                         </Link>
                     </div>
+
+                    {/* Footer mobile */}
+                    <p className="text-center text-xs text-[var(--text-faint)] mt-6 lg:hidden">
+                        <span style={{ color: 'var(--primary)' }}>Green IT</span> — Économisez des ressources à chaque prompt
+                    </p>
                 </div>
             </div>
         </div>

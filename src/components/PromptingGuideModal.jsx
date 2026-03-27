@@ -6,97 +6,136 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in" onClick={onClose}>
             <div 
-                className="glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto relative animate-scale-up" 
+                className="glass-card max-w-2xl w-full max-h-[92vh] overflow-y-auto relative animate-scale-up" 
                 onClick={(e) => e.stopPropagation()}
-                style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent' }}
+                style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent', padding: '3rem 2.5rem' }}
             >
+
+
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors z-10 bg-[var(--bg-surface)] rounded-full"
+                    className="absolute top-6 right-6 p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors z-20 bg-[var(--bg-surface)]/80 backdrop-blur-md rounded-full border border-[var(--glass-border)]"
                 >
                     <X className="w-5 h-5" />
                 </button>
 
+
                 {/* Header */}
-                <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center gap-5 mb-10">
                     <div
-                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
-                        style={{ boxShadow: 'var(--neon-glow-md)' }}
+                        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
+                        style={{ boxShadow: 'var(--neon-glow-lg)' }}
                     >
-                        <Lightbulb className="w-7 h-7 text-[var(--bg-primary)]" />
+                        <Lightbulb className="w-8 h-8 text-[var(--bg-primary)]" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold gradient-text">Guide des Bonnes Pratiques</h2>
-                        <p className="text-[var(--text-secondary)] mt-1">Comment formuler des prompts efficients et responsables.</p>
+                        <h2 className="text-3xl font-bold gradient-text" style={{ fontFamily: 'var(--font-display)' }}>Guide des Bonnes Pratiques</h2>
+                        <p className="text-[var(--text-secondary)] mt-1.5 text-sm">Maîtrisez l'art du prompt efficient et souverain.</p>
                     </div>
                 </div>
 
                 {/* Content Sections */}
-                <div className="space-y-6">
-                    {/* Section 1: Precision */}
-                    <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Zap className="w-5 h-5 text-[var(--accent)]" />
-                            <h3 className="text-lg font-semibold text-[var(--text-primary)]">1. Soyez Précis et Direct</h3>
+                <div className="grid grid-cols-1 gap-10">
+                    {/* Section 1: Sovereignty (3.png) */}
+                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--accent)]/30 transition-colors">
+                        <div className="aspect-[21/9] w-full relative overflow-hidden">
+                            <img src="/3.png" alt="Souveraineté" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
-                            L'IA n'a pas besoin de politesse excessive ("S'il te plaît", "Pourrais-tu"). Allez droit au but : définissez le <strong>rôle</strong>, la <strong>tâche</strong> et le <strong>format de sortie</strong> attendu.
-                        </p>
-                        <div className="bg-[var(--bg-primary)] p-3 rounded-lg border border-[var(--error)]/30 mb-2">
-                            <span className="text-xs text-[var(--error)] font-bold uppercase tracking-wider block mb-1">À éviter</span>
-                            <span className="text-sm text-[var(--text-muted)] italic">"Bonjour, pourrais-tu s'il te plaît m'écrire un petit texte pour dire que..."</span>
-                        </div>
-                        <div className="bg-[var(--bg-primary)] p-3 rounded-lg border border-[var(--success)]/30">
-                            <span className="text-xs text-[var(--success)] font-bold uppercase tracking-wider block mb-1">Idéal</span>
-                            <span className="text-sm text-[var(--text-muted)]">"Rédige un email de 3 paragraphes pour annoncer le lancement du produit X."</span>
+                        <div className="p-7">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center border border-[var(--accent)]/20">
+                                    <Shield className="w-5 h-5 text-[var(--accent)]" />
+                                </div>
+                                <h3 className="text-xl font-bold text-[var(--text-primary)]">1. Choisissez la Souveraineté</h3>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                                Privilégiez des modèles européens (ex: <strong>Mistral</strong>) pour vos données sensibles. Ces modèles ne sont pas soumis aux lois extra-territoriales US (Cloud Act) et garantissent un respect strict du RGPD.
+                            </p>
                         </div>
                     </div>
 
-                    {/* Section 2: Eco Impact */}
-                    <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Leaf className="w-5 h-5 text-[#60a5fa]" />
-                            <h3 className="text-lg font-semibold text-[var(--text-primary)]">2. Réduisez les "Tokens"</h3>
+                    {/* Section 2: Eco Impact (1.png) */}
+                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--eco-a)]/30 transition-colors">
+                        <div className="aspect-[21/9] w-full relative overflow-hidden">
+                            <img src="/1.png" alt="Impact Éco" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
-                            Les LLM découpent votre texte en "tokens" (mots ou syllabes). Plus votre prompt est long, plus le serveur consomme d'électricité et d'eau pour le traiter. 
-                        </p>
-                        <ul className="list-disc pl-5 text-sm text-[var(--text-secondary)] space-y-1">
-                            <li>Supprimez les mots de remplissage.</li>
-                            <li>Demandez explicitement des réponses courtes si vous n'avez pas besoin de détails (`"Réponds en 1 phrase"`).</li>
-                        </ul>
+                        <div className="p-7">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--eco-a)]/10 flex items-center justify-center border border-[var(--eco-a)]/20">
+                                    <Leaf className="w-5 h-5 text-[var(--eco-a)]" />
+                                </div>
+                                <h3 className="text-xl font-bold text-[var(--text-primary)]">2. Réduisez les "Tokens"</h3>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+                                Chaque token généré consomme de l'énergie et de l'eau. Soyez concis et évitez le remplissage inutile.
+                            </p>
+                            <ul className="list-disc pl-5 text-sm text-[var(--text-muted)] space-y-2">
+                                <li>Supprimez les formules de politesse superflues.</li>
+                                <li>Utilisez des contraintes : <code className="bg-black/20 px-1.5 py-0.5 rounded">"Réponds en 1 phrase"</code>.</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    {/* Section 3: Sovereignty */}
-                    <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Shield className="w-5 h-5 text-[#ffdd00]" />
-                            <h3 className="text-lg font-semibold text-[var(--text-primary)]">3. Choisissez le bon Modèle</h3>
+                    {/* Section 3: Performance/Context (2.png) */}
+                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--primary)]/30 transition-colors">
+                        <div className="aspect-[21/9] w-full relative overflow-hidden">
+                            <img src="/2.png" alt="Performance" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                            Tous les modèles ne se valent pas en matière de confidentialité. Si vous traitez des données sensibles, privilégiez des modèles open-weights européens (ex: <strong>Mistral</strong>) qui ne sont pas soumis au Cloud Act américain et respectent le RGPD. Utilisez les gros modèles (GPT-5, Opus) uniquement pour des tâches complexes nécessitant un fort niveau de raisonnement.
-                        </p>
+                        <div className="p-7">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center border border-[var(--primary)]/20">
+                                    <Zap className="w-5 h-5 text-[var(--primary)]" />
+                                </div>
+                                <h3 className="text-xl font-bold text-[var(--text-primary)]">3. Structurez votre Contexte</h3>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                                Utilisez des délimiteurs (<code className="bg-black/20 px-1 py-0.5 rounded">"""</code>, <code className="bg-black/20 px-1 py-0.5 rounded">###</code>) pour isoler vos instructions. Une structure claire réduit les hallucinations et évite les regénérations coûteuses.
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Section 4: Context */}
-                    <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--glass-border)]">
-                        <div className="flex items-center gap-2 mb-3">
-                            <FileText className="w-5 h-5 text-[var(--primary)]" />
-                            <h3 className="text-lg font-semibold text-[var(--text-primary)]">4. Fournissez du Contexte Structuré</h3>
+                    {/* Section 4: Precision (4.png) */}
+                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--success)]/30 transition-colors">
+                        <div className="aspect-[21/9] w-full relative overflow-hidden">
+                            <img src="/4.png" alt="Précision" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                            Utilisez des délimiteurs comme `"""` ou `###` pour séparer vos instructions de vos données. L'IA comprendra mieux la structure de votre demande, réduisant ainsi le risque d'hallucinations et la nécessité de regénérer la réponse.
-                        </p>
+                        <div className="p-7">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--success)]/10 flex items-center justify-center border border-[var(--success)]/20">
+                                    <Lightbulb className="w-5 h-5 text-[var(--success)]" />
+                                </div>
+                                <h3 className="text-xl font-bold text-[var(--text-primary)]">4. Soyez Précis et Direct</h3>
+                            </div>
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
+                                Définissez clairement le <strong>rôle</strong>, la <strong>tâche</strong> et le <strong>format</strong> de sortie attendu.
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-black/20 p-4 rounded-xl border border-[var(--error)]/10">
+                                    <span className="text-[10px] text-[var(--error)] font-bold uppercase tracking-widest block mb-1.5 opacity-60">À éviter</span>
+                                    <span className="text-[13px] text-[var(--text-muted)] leading-tight italic">"Bonjour, est-ce que tu pourrais m'aider à..."</span>
+                                </div>
+                                <div className="bg-black/20 p-4 rounded-xl border border-[var(--success)]/10">
+                                    <span className="text-[10px] text-[var(--success)] font-bold uppercase tracking-widest block mb-1.5 opacity-60">Idéal</span>
+                                    <span className="text-[13px] text-[var(--text-primary)] leading-tight">"Analyse ce rapport et extrais les 3 points clés en format liste."</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+
                 {/* Footer Action */}
-                <div className="mt-8 text-center pt-6 border-t border-[var(--glass-border)]">
-                    <button onClick={onClose} className="btn btn-primary px-8 py-3">
+                <div className="mt-10 text-center pt-8 border-t border-[var(--glass-border)]">
+                    <button onClick={onClose} className="btn btn-primary px-10 py-3.5 shadow-xl hover:scale-[1.02] active:scale-[0.98]">
                         J'ai compris, retour à l'optimiseur
                     </button>
                 </div>
+
             </div>
         </div>
     );

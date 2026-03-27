@@ -1,7 +1,12 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import PageTransition from './components/PageTransition';
+import OnboardingModal from './components/OnboardingModal';
+
+
 import DarkVeil from './components/DarkVeil';
 import { Loader2 } from 'lucide-react';
 
@@ -45,50 +50,55 @@ function App() {
       <div className="fixed inset-0 z-[-1] pointer-events-none opacity-30 mix-blend-screen transition-opacity duration-1000">
           <DarkVeil hueShift={120} noiseIntensity={0.03} scanlineIntensity={0.2} speed={0.2} warpAmount={0.04} />
       </div>
-      <AuthProvider>
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
+      <ToastProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Suspense fallback={<PageLoader />}>
+            <Routes>
 
-            {/* Protected Routes */}
-            <Route
-              path="/generator"
-              element={
-                <ProtectedRoute>
-                  <Generator />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/history"
-              element={
-                <ProtectedRoute>
-                  <History />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Public Routes */}
+              <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+              <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+              <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+              <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
+              <Route path="/verify-email" element={<PageTransition><VerifyEmail /></PageTransition>} />
 
-            {/* Default Redirect */}
-            <Route path="/" element={<Navigate to="/generator" replace />} />
-            <Route path="*" element={<Navigate to="/generator" replace />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </AuthProvider>
+              {/* Protected Routes */}
+              <Route
+                path="/generator"
+                element={
+                  <ProtectedRoute>
+                    <PageTransition><Generator /></PageTransition>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute>
+                    <PageTransition><History /></PageTransition>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <PageTransition><Dashboard /></PageTransition>
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Default Redirect */}
+              <Route path="/" element={<Navigate to="/generator" replace />} />
+              <Route path="*" element={<Navigate to="/generator" replace />} />
+            </Routes>
+
+          </Suspense>
+        </BrowserRouter>
+      </AuthProvider>
+    </ToastProvider>
+
     </div>
   );
 }

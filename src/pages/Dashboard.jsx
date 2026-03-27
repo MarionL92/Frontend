@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { promptAPI } from '../services/api';
 import Layout from '../components/Layout';
+import Skeleton from '../components/Skeleton';
+
 import {
     BarChart3,
-    Loader2,
     AlertCircle,
     Zap,
     Leaf,
@@ -40,50 +41,51 @@ const formatValue = (num, decimals = 4) => {
 /* ── Improved Stat Card ── */
 const StatCard = ({ icon: Icon, label, value, unit, color, subtitle }) => (
     <div
-        className="glass-card neon-hover flex flex-col gap-4"
-        style={{ padding: '1.5rem' }}
+        className="glass-card neon-hover flex flex-col gap-3"
+        style={{ padding: '1.25rem' }}
     >
         {/* Top row: icon + label */}
         <div className="flex items-center justify-between">
             <div
                 className="square-icon"
-                style={{ backgroundColor: `${color}14`, border: `1px solid ${color}22` }}
+                style={{ backgroundColor: `${color}14`, border: `1px solid ${color}22`, width: '2rem', height: '2rem' }}
             >
                 <Icon
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     style={{ color, filter: `drop-shadow(0 0 5px ${color}70)` }}
                 />
             </div>
-            <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide">
+            <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                 {label}
             </span>
         </div>
 
         {/* Value */}
-        <div>
-            <div className="flex items-baseline gap-1.5 mb-1">
+        <div className="flex flex-col">
+            <div className="flex items-baseline gap-1.5">
                 <span
-                    className="text-3xl font-bold"
-                    style={{ color, fontFamily: 'var(--font-display)', textShadow: `0 0 12px ${color}35` }}
+                    className="text-2xl font-bold"
+                    style={{ color, fontFamily: 'var(--font-display)', textShadow: `0 0 12px ${color}35`, lineHeight: 1 }}
                 >
                     {value}
                 </span>
                 {unit && (
-                    <span className="text-sm text-[var(--text-muted)] font-medium">{unit}</span>
+                    <span className="text-xs text-[var(--text-muted)] font-medium">{unit}</span>
                 )}
             </div>
             {subtitle && (
-                <p className="text-xs text-[var(--text-muted)]">{subtitle}</p>
+                <p className="text-[10px] text-[var(--text-muted)] mt-1 opacity-80">{subtitle}</p>
             )}
         </div>
 
         {/* Accent bottom bar */}
         <div
-            className="w-full rounded-full"
-            style={{ height: '2px', background: `linear-gradient(90deg, ${color}60, transparent)` }}
+            className="w-full rounded-full opacity-40"
+            style={{ height: '1.5px', background: `linear-gradient(90deg, ${color}80, transparent)` }}
         />
     </div>
 );
+
 
 const MODEL_COLORS = {
     mistral_2:     '#ff7e00',
@@ -177,14 +179,77 @@ const Dashboard = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                        <Loader2
-                            className="w-10 h-10 animate-spin"
-                            style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 8px rgba(57,255,20,0.5))' }}
-                        />
-                        <p className="text-[var(--text-secondary)]">Chargement des statistiques…</p>
+                    <div className="flex flex-col gap-8 animate-fade-in">
+                        {/* Skeleton Stat Cards */}
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div key={i} className="glass-card" style={{ padding: '1.25rem' }}>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <Skeleton width="2rem" height="2rem" borderRadius="8px" />
+                                        <Skeleton width="4rem" height="0.75rem" />
+                                    </div>
+                                    <div className="mb-2">
+                                        <Skeleton width="5rem" height="1.75rem" className="mb-1" />
+                                        <Skeleton width="6rem" height="0.65rem" />
+                                    </div>
+                                    <Skeleton width="100%" height="1.5px" borderRadius="1px" />
+                                </div>
+                            ))}
+                        </div>
+
+
+                        {/* Skeleton Charts Row */}
+                        <div className="grid lg:grid-cols-2 gap-6">
+                            <div className="glass-card" style={{ padding: '1.5rem' }}>
+                                <div className="flex items-center gap-2.5 mb-6">
+                                    <Skeleton width="1.25rem" height="1.25rem" borderRadius="4px" />
+                                    <Skeleton width="10rem" height="1rem" />
+                                </div>
+                                <div className="flex flex-col items-center justify-center py-4">
+                                    <Skeleton width="11rem" height="11rem" borderRadius="50%" className="mb-6" />
+                                    <div className="flex flex-wrap justify-center gap-4 w-full">
+                                        <Skeleton width="5rem" height="0.75rem" />
+                                        <Skeleton width="6rem" height="0.75rem" />
+                                        <Skeleton width="4rem" height="0.75rem" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="glass-card" style={{ padding: '1.5rem' }}>
+                                <div className="flex items-center gap-2.5 mb-6">
+                                    <Skeleton width="1.25rem" height="1.25rem" borderRadius="4px" />
+                                    <Skeleton width="10rem" height="1rem" />
+                                </div>
+                                <div className="space-y-5 py-2">
+                                    {[1, 2, 3, 4].map((j) => (
+                                        <div key={j} className="flex items-center gap-4">
+                                            <Skeleton width="4rem" height="0.75rem" />
+                                            <Skeleton width="100%" height="1.25rem" borderRadius="4px" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Skeleton Impact */}
+                        <div className="glass-card" style={{ padding: '1.75rem' }}>
+                            <div className="flex items-center gap-3 mb-8">
+                                <Skeleton width="1.5rem" height="1.5rem" borderRadius="50%" />
+                                <Skeleton width="14rem" height="1.25rem" />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                                {[1, 2, 3].map((k) => (
+                                    <div key={k} className="rounded-2xl border border-[var(--glass-border)]" style={{ background: 'var(--bg-secondary)', padding: '1.75rem 1.25rem' }}>
+                                        <Skeleton width="3rem" height="3rem" borderRadius="1rem" className="mx-auto mb-4" />
+                                        <Skeleton width="6rem" height="1.75rem" className="mx-auto mb-2" />
+                                        <Skeleton width="8rem" height="0.75rem" className="mx-auto" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 ) : error ? (
+
                     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
                         <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,23,68,0.1)' }}>
                             <AlertCircle className="w-7 h-7 text-[var(--error)]" />
@@ -229,14 +294,15 @@ const Dashboard = () => {
                         <div className="grid lg:grid-cols-2 gap-6">
 
                             {/* Pie Chart */}
-                            <div className="glass-card neon-hover" style={{ padding: '1.5rem' }}>
-                                <div className="flex items-center gap-2.5 mb-5">
+                            <div className="glass-card neon-hover" style={{ padding: '1.25rem' }}>
+                                <div className="flex items-center gap-2.5 mb-4">
                                     <PieChart
-                                        className="w-4.5 h-4.5"
-                                        style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.4))', width: '1.1rem', height: '1.1rem' }}
+                                        className="w-4 h-4"
+                                        style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.4))' }}
                                     />
-                                    <h3 className="font-semibold text-[var(--text-primary)] text-sm">Répartition par modèle</h3>
+                                    <h3 className="font-semibold text-[var(--text-primary)] text-xs uppercase tracking-wider">Répartition par modèle</h3>
                                 </div>
+
 
                                 {modelUsageData.length > 0 ? (
                                     <div>
@@ -284,14 +350,15 @@ const Dashboard = () => {
                             </div>
 
                             {/* Bar Chart */}
-                            <div className="glass-card neon-hover" style={{ padding: '1.5rem' }}>
-                                <div className="flex items-center gap-2.5 mb-5">
+                            <div className="glass-card neon-hover" style={{ padding: '1.25rem' }}>
+                                <div className="flex items-center gap-2.5 mb-4">
                                     <BarChart3
-                                        className="w-4.5 h-4.5"
-                                        style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.4))', width: '1.1rem', height: '1.1rem' }}
+                                        className="w-4 h-4"
+                                        style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.4))' }}
                                     />
-                                    <h3 className="font-semibold text-[var(--text-primary)] text-sm">Utilisation par modèle</h3>
+                                    <h3 className="font-semibold text-[var(--text-primary)] text-xs uppercase tracking-wider">Utilisation par modèle</h3>
                                 </div>
+
 
                                 {modelUsageData.length > 0 ? (
                                     <div className="h-52">
