@@ -165,7 +165,7 @@ const Dashboard = () => {
             <div className="container">
 
                 {/* ── Page Header ── */}
-                <div className="flex items-center gap-4 mb-10">
+                <div className="flex items-center gap-4" style={{ marginBottom: '3.5rem' }}>
                     <div
                         className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
                         style={{ boxShadow: 'var(--neon-glow-md)' }}
