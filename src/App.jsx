@@ -19,6 +19,9 @@ const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 const Generator = lazy(() => import('./pages/Generator'));
 const History = lazy(() => import('./pages/History'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
+const Confidentialite = lazy(() => import('./pages/Confidentialite'));
+const Contact = lazy(() => import('./pages/Contact'));
 
 // Neon loading spinner fallback
 const PageLoader = () => (
@@ -88,6 +91,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              {/* Legal Pages (public) */}
+              <Route path="/mentions-legales" element={<PageTransition><MentionsLegales /></PageTransition>} />
+              <Route path="/confidentialite" element={<PageTransition><Confidentialite /></PageTransition>} />
+              <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
 
               {/* Default Redirect */}
               <Route path="/" element={<Navigate to="/generator" replace />} />

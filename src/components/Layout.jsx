@@ -178,62 +178,23 @@ const Layout = ({ children }) => {
             )}
 
             {/* ── Footer ── */}
-            <footer className="relative py-10 overflow-hidden" style={{
-                background: 'var(--bg-secondary)',
-                borderTop: '1px solid var(--glass-border)',
-            }}>
-                {/* Top glow line */}
-                <div
-                    className="absolute top-0 left-0 w-full"
-                    style={{
-                        height: '1px',
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(57,255,20,0.5) 50%, transparent 100%)',
-                        boxShadow: '0 0 12px rgba(57,255,20,0.6)',
-                    }}
-                />
-
-                {/* Bottom ambient glow */}
-                <div
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 pointer-events-none"
-                    style={{
-                        width: '360px',
-                        height: '120px',
-                        background: 'rgba(57,255,20,0.07)',
-                        borderRadius: '50%',
-                        filter: 'blur(56px)',
-                    }}
-                />
-
-                <div className="container relative z-10 flex flex-col items-center gap-4 text-center">
-                    {/* Brand */}
-                    <div className="flex items-center gap-2">
-                        <Leaf
-                            className="w-4 h-4 animate-pulse"
-                            style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 6px rgba(57,255,20,0.7))' }}
-                        />
-                        <span
-                            className="text-base font-bold text-[var(--text-primary)] tracking-wide"
-                            style={{ fontFamily: 'var(--font-display)', textShadow: '0 0 10px rgba(57,255,20,0.3)' }}
-                        >
-                            PromptOptim
-                        </span>
+            <footer style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--glass-border)', padding: '1.25rem 0', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(57,255,20,0.5) 50%, transparent 100%)' }} />
+                <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Leaf style={{ width: '0.875rem', height: '0.875rem', color: 'var(--primary)' }} />
+                        <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', fontFamily: 'var(--font-display)' }}>PromptOptim</span>
+                        <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>— Green IT & Souveraineté</span>
                     </div>
-
-                    <p className="text-sm text-[var(--text-secondary)] max-w-xs leading-relaxed">
-                        L'intelligence artificielle au service de l'écologie.
-                        <span className="block mt-1 section-label">Green IT & Souveraineté des données</span>
-                    </p>
-
-                    {/* Links */}
-                    <div className="neon-divider w-full max-w-xs" style={{ margin: '0.25rem 0' }} />
-                    <div className="flex flex-wrap justify-center gap-6 text-xs text-[var(--text-muted)]">
-                        {['Mentions Légales', 'Confidentialité', 'Contact'].map((label) => (
-                            <span
-                                key={label}
-                                className="cursor-pointer hover:text-[var(--primary)] transition-colors"
-                            >
+                    <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.75rem' }}>
+                        {[
+                            { label: 'Mentions Légales', path: '/mentions-legales' },
+                            { label: 'Confidentialité', path: '/confidentialite' },
+                            { label: 'Contact', path: '/contact' },
+                        ].map(({ label, path }) => (
+                            <Link key={path} to={path} className="hover:text-[var(--primary)] transition-colors" style={{ color: 'var(--text-muted)' }}>
                                 {label}
-                            </span>
+                            </Link>
                         ))}
                     </div>
                 </div>
