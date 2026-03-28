@@ -309,7 +309,7 @@ const History = () => {
             <div className="container max-w-4xl">
 
                 {/* ── Header ── */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-14">
                     <div className="flex items-center gap-4">
                         <div
                             className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
@@ -325,14 +325,14 @@ const History = () => {
 
                     <div className="flex items-center gap-3">
                         {/* Search bar */}
-                        <div className="relative group">
-                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
-                            <input 
+                        <div className="relative group w-full sm:w-auto">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
+                            <input
                                 type="text"
                                 placeholder="Rechercher..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="bg-[var(--bg-surface)] border border-[var(--glass-border)] rounded-full py-2 pl-10 pr-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all w-full sm:w-64"
+                                className="bg-[var(--bg-surface)] border border-[var(--glass-border)] rounded-full py-3.5 pl-12 pr-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all w-full sm:w-96"
                             />
                             {searchTerm && (
                                 <button 
@@ -346,14 +346,14 @@ const History = () => {
 
                         {history.length > 0 && (
                             <div
-                                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full flex-shrink-0"
+                                className="hidden sm:flex items-center gap-3 px-6 py-3.5 rounded-full flex-shrink-0"
                                 style={{
                                     background: 'var(--bg-surface)',
                                     border: '1px solid var(--glass-border)',
                                 }}
                             >
-                                <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-                                <span className="text-sm font-semibold text-[var(--text-primary)]">
+                                <Sparkles className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.5))' }} />
+                                <span className="text-base font-bold text-[var(--text-primary)]">
                                     {history.length}
                                 </span>
                             </div>

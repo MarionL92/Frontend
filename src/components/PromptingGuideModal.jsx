@@ -14,11 +14,14 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 pt-[5vh] animate-fade-in" onClick={onClose} style={{ overflowY: 'auto' }}>
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+            onClick={onClose}
+        >
             <div
-                className="glass-card max-w-2xl w-full relative animate-scale-up my-auto"
+                className="glass-card max-w-2xl w-full max-h-[85vh] overflow-y-auto relative animate-scale-up"
                 onClick={(e) => e.stopPropagation()}
-                style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent', padding: '3rem 2.5rem' }}
+                style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent', padding: '3rem 3rem' }}
             >
 
 
@@ -32,7 +35,7 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
 
 
                 {/* Header */}
-                <div className="flex items-center gap-5 mb-10">
+                <div className="flex items-center gap-5 mb-12">
                     <div
                         className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
                         style={{ boxShadow: 'var(--neon-glow-lg)' }}
@@ -41,20 +44,20 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
                     </div>
                     <div>
                         <h2 className="text-3xl font-bold gradient-text" style={{ fontFamily: 'var(--font-display)' }}>Guide des Bonnes Pratiques</h2>
-                        <p className="text-[var(--text-secondary)] mt-1.5 text-sm">Maîtrisez l'art du prompt efficient et souverain.</p>
+                        <p className="text-[var(--text-secondary)] mt-3 text-sm">Maîtrisez l'art du prompt efficient et souverain.</p>
                     </div>
                 </div>
 
                 {/* Content Sections */}
-                <div className="grid grid-cols-1 gap-10">
+                <div className="grid grid-cols-1 gap-12">
                     {/* Section 1: Sovereignty (3.png) */}
                     <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--accent)]/30 transition-colors">
                         <div className="aspect-[21/9] w-full relative overflow-hidden">
                             <img src="/3.png" alt="Souveraineté" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <div className="p-7">
-                            <div className="flex items-center gap-3 mb-4">
+                        <div className="p-8">
+                            <div className="flex items-center gap-3 mb-5">
                                 <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center border border-[var(--accent)]/20">
                                     <Shield className="w-5 h-5 text-[var(--accent)]" />
                                 </div>
@@ -72,17 +75,17 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
                             <img src="/1.png" alt="Impact Éco" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <div className="p-7">
-                            <div className="flex items-center gap-3 mb-4">
+                        <div className="p-8">
+                            <div className="flex items-center gap-3 mb-5">
                                 <div className="w-10 h-10 rounded-xl bg-[var(--eco-a)]/10 flex items-center justify-center border border-[var(--eco-a)]/20">
                                     <Leaf className="w-5 h-5 text-[var(--eco-a)]" />
                                 </div>
                                 <h3 className="text-xl font-bold text-[var(--text-primary)]">2. Réduisez les "Tokens"</h3>
                             </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
                                 Chaque token généré consomme de l'énergie et de l'eau. Soyez concis et évitez le remplissage inutile.
                             </p>
-                            <ul className="list-disc pl-5 text-sm text-[var(--text-muted)] space-y-2">
+                            <ul className="list-disc pl-5 text-sm text-[var(--text-muted)] space-y-3">
                                 <li>Supprimez les formules de politesse superflues.</li>
                                 <li>Utilisez des contraintes : <code className="bg-black/20 px-1.5 py-0.5 rounded">"Réponds en 1 phrase"</code>.</li>
                             </ul>
@@ -95,8 +98,8 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
                             <img src="/2.png" alt="Performance" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <div className="p-7">
-                            <div className="flex items-center gap-3 mb-4">
+                        <div className="p-8">
+                            <div className="flex items-center gap-3 mb-5">
                                 <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center border border-[var(--primary)]/20">
                                     <Zap className="w-5 h-5 text-[var(--primary)]" />
                                 </div>
@@ -114,14 +117,14 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
                             <img src="/4.png" alt="Précision" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
                         </div>
-                        <div className="p-7">
-                            <div className="flex items-center gap-3 mb-4">
+                        <div className="p-8">
+                            <div className="flex items-center gap-3 mb-5">
                                 <div className="w-10 h-10 rounded-xl bg-[var(--success)]/10 flex items-center justify-center border border-[var(--success)]/20">
                                     <Lightbulb className="w-5 h-5 text-[var(--success)]" />
                                 </div>
                                 <h3 className="text-xl font-bold text-[var(--text-primary)]">4. Soyez Précis et Direct</h3>
                             </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
                                 Définissez clairement le <strong>rôle</strong>, la <strong>tâche</strong> et le <strong>format</strong> de sortie attendu.
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
