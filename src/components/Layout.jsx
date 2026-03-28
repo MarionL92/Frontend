@@ -188,7 +188,7 @@ const Layout = ({ children }) => {
             </header>
 
             {/* ── Main Content ── */}
-            <main style={{ paddingTop: '6.5rem', paddingBottom: '3rem', flex: 1 }}>
+            <main style={{ paddingTop: '6.5rem', paddingBottom: '5rem', flex: 1 }}>
                 {children}
             </main>
 

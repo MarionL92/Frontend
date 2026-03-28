@@ -83,7 +83,7 @@ const HistoryItem = ({ item, index }) => {
             {/* ── Header row — always visible ── */}
             <div
                 className="flex items-center gap-4 cursor-pointer select-none"
-                style={{ padding: '0.875rem 1.25rem' }}
+                style={{ padding: '1.125rem 1.5rem' }}
                 onClick={() => setExpanded(!expanded)}
             >
                 {/* Eco + sovereignty badges */}
@@ -167,11 +167,11 @@ const HistoryItem = ({ item, index }) => {
                     className="animate-fade-in"
                     style={{
                         borderTop: '1px solid var(--glass-border)',
-                        padding: '1.25rem',
+                        padding: '1.75rem 1.5rem',
                     }}
                 >
                     {/* Prompt output */}
-                    <div className="mb-4">
+                    <div className="mb-6">
                         <div className="flex items-center justify-between mb-2">
                             <span className="section-label">Prompt optimisé</span>
                             <button
@@ -209,9 +209,9 @@ const HistoryItem = ({ item, index }) => {
 
                     {/* Metric pills */}
                     {(item.green_data || item.sovereignty_data) && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2.5 mb-6">
                             {item.green_data?.tokens_saved !== undefined && (
-                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
                                     <BatteryCharging className="w-3 h-3" style={{ color: 'var(--primary)' }} />
                                     <span className="text-[var(--text-secondary)]">
                                         <strong className="text-[var(--text-primary)]">{item.green_data.tokens_saved}</strong> tokens
@@ -219,7 +219,7 @@ const HistoryItem = ({ item, index }) => {
                                 </div>
                             )}
                             {item.green_data?.co2_saved_g !== undefined && (
-                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
                                     <Leaf className="w-3 h-3" style={{ color: 'var(--eco-b)' }} />
                                     <span className="text-[var(--text-secondary)]">
                                         <strong className="text-[var(--text-primary)]">{formatSmallNumber(item.green_data.co2_saved_g)}</strong> g CO₂
@@ -227,7 +227,7 @@ const HistoryItem = ({ item, index }) => {
                                 </div>
                             )}
                             {item.sovereignty_data && (
-                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
                                     <Shield className="w-3 h-3" style={{ color: sovColor }} />
                                     <span className="text-[var(--text-secondary)]">
                                         <strong className="text-[var(--text-primary)]">{sovereigntyScore}/100</strong> souveraineté
@@ -235,7 +235,7 @@ const HistoryItem = ({ item, index }) => {
                                 </div>
                             )}
                             {item.sovereignty_data?.location && (
-                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs" style={{ background: 'var(--bg-secondary)' }}>
                                     <span className="text-[var(--text-secondary)]">📍 {item.sovereignty_data.location}</span>
                                 </div>
                             )}
@@ -407,7 +407,7 @@ const History = () => {
                         <button onClick={() => setSearchTerm('')} className="text-[var(--primary)] text-sm mt-2 hover:underline">Réinitialiser la recherche</button>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-5">
                         {filteredHistory.map((item, index) => (
                             <HistoryItem key={item.id} item={item} index={index} />
                         ))}

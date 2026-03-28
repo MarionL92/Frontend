@@ -181,7 +181,7 @@ const Generator = () => {
 
 
                         {error && (
-                            <div className="alert alert-error animate-fade-in">
+                            <div className="alert alert-error animate-fade-in" style={{ marginTop: '0.25rem', marginBottom: '0.25rem' }}>
                                 <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                                 <span>{error}</span>
                             </div>
@@ -209,7 +209,7 @@ const Generator = () => {
                                 >
                                     <pre
                                         className="text-sm text-[var(--text-primary)] font-mono leading-relaxed whitespace-pre-wrap"
-                                        style={{ padding: '1rem 2.5rem 1rem 1rem', wordBreak: 'break-word', overflowWrap: 'break-word', maxHeight: '320px', overflowY: 'auto', margin: 0 }}
+                                        style={{ padding: '1rem 3rem 1rem 1rem', wordBreak: 'break-word', overflowWrap: 'break-word', maxHeight: '320px', overflowY: 'auto', margin: 0 }}
                                     >
                                         {result.optimized_prompt}
                                     </pre>

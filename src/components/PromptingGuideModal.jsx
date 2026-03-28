@@ -1,12 +1,22 @@
+import { useEffect } from 'react';
 import { X, Lightbulb, Zap, Shield, Leaf, FileText } from 'lucide-react';
 
 const PromptingGuideModal = ({ isOpen, onClose }) => {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in" onClick={onClose}>
-            <div 
-                className="glass-card max-w-2xl w-full max-h-[92vh] overflow-y-auto relative animate-scale-up" 
+        <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 pt-[5vh] animate-fade-in" onClick={onClose} style={{ overflowY: 'auto' }}>
+            <div
+                className="glass-card max-w-2xl w-full relative animate-scale-up my-auto"
                 onClick={(e) => e.stopPropagation()}
                 style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent', padding: '3rem 2.5rem' }}
             >
