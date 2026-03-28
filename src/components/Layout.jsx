@@ -7,19 +7,16 @@ import {
     BarChart3,
     LogOut,
     Menu,
-    X,
-    Lightbulb
+    X
 } from 'lucide-react';
 import { useState } from 'react';
 import OnboardingModal from './OnboardingModal';
-import PromptingGuideModal from './PromptingGuideModal';
 
 const Layout = ({ children }) => {
     const { logout, isAuthenticated } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isGuideOpen, setIsGuideOpen] = useState(false);
 
     const handleLogout = () => {
         logout();
@@ -100,14 +97,6 @@ const Layout = ({ children }) => {
                         {isAuthenticated && (
                             <>
                                 <button
-                                    onClick={() => setIsGuideOpen(true)}
-                                    className="hidden md:flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] rounded-xl transition-all"
-                                >
-                                    <Lightbulb className="w-3.5 h-3.5" />
-                                    <span>Guide</span>
-                                </button>
-
-                                <button
                                     onClick={handleLogout}
                                     className="hidden md:flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--error)] hover:bg-[rgba(255,23,68,0.08)] rounded-xl transition-all"
                                 >
@@ -167,15 +156,6 @@ const Layout = ({ children }) => {
                         <div className="neon-divider my-1" />
 
                         <button
-                            onClick={() => { setIsGuideOpen(true); setMobileMenuOpen(false); }}
-                            className="flex items-center gap-3 rounded-xl w-full text-left transition-all"
-                            style={{ color: 'var(--text-secondary)', padding: '0.8rem 1rem' }}
-                        >
-                            <Lightbulb style={{ width: '1.125rem', height: '1.125rem' }} />
-                            <span className="text-sm font-medium">Guide & Astuces</span>
-                        </button>
-
-                        <button
                             onClick={handleLogout}
                             className="flex items-center gap-3 rounded-xl w-full text-left transition-all"
                             style={{ color: 'var(--error)', padding: '0.8rem 1rem' }}
@@ -194,10 +174,7 @@ const Layout = ({ children }) => {
 
             {/* ── Modals ── */}
             {isAuthenticated && (
-                <>
-                    <OnboardingModal />
-                    <PromptingGuideModal isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
-                </>
+                <OnboardingModal />
             )}
 
             {/* ── Footer ── */}
