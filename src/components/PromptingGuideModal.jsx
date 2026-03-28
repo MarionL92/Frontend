@@ -19,19 +19,20 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
             onClick={onClose}
         >
             <div
-                className="glass-card max-w-2xl w-full max-h-[85vh] overflow-y-auto relative animate-scale-up"
+                className="glass-card max-w-2xl w-full relative"
                 onClick={(e) => e.stopPropagation()}
-                style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent', padding: '3rem 3rem' }}
+                style={{ maxHeight: '85vh', padding: 0 }}
             >
-
-
-                {/* Close Button */}
+                {/* Close Button — fixed inside the card, above the scroll area */}
                 <button
                     onClick={onClose}
                     className="absolute top-6 right-6 p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors z-20 bg-[var(--bg-surface)]/80 backdrop-blur-md rounded-full border border-[var(--glass-border)]"
                 >
                     <X className="w-5 h-5" />
                 </button>
+
+                {/* Inner scroll container */}
+                <div style={{ overflowY: 'auto', maxHeight: '85vh', padding: '3rem 3rem', scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent' }}>
 
 
                 {/* Header */}
@@ -149,6 +150,7 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
                     </button>
                 </div>
 
+                </div>{/* end inner scroll container */}
             </div>
         </div>
     );
