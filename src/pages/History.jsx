@@ -297,8 +297,8 @@ const History = () => {
     const filteredHistory = useMemo(() => {
         if (!searchTerm.trim()) return history;
         const lowSearch = searchTerm.toLowerCase();
-        return history.filter(item => 
-            item.original_intent?.toLowerCase().includes(lowSearch) || 
+        return history.filter(item =>
+            item.original_intent?.toLowerCase().includes(lowSearch) ||
             item.optimized_prompt?.toLowerCase().includes(lowSearch) ||
             item.target_model?.toLowerCase().includes(lowSearch)
         );
@@ -327,15 +327,8 @@ const History = () => {
                         {/* Search bar */}
                         <div className="relative group w-full sm:w-auto">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Rechercher..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="bg-[var(--bg-surface)] border border-[var(--glass-border)] rounded-full py-3.5 pl-12 pr-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all w-full sm:w-96"
-                            />
                             {searchTerm && (
-                                <button 
+                                <button
                                     onClick={() => setSearchTerm('')}
                                     className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-[var(--bg-secondary)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                                 >
