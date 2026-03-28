@@ -309,54 +309,109 @@ const History = () => {
             <div className="container max-w-4xl">
 
                 {/* ── Header ── */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-14">
-                    <div className="flex items-center gap-4">
-                        <div
-                            className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
-                            style={{ boxShadow: 'var(--neon-glow-md)' }}
-                        >
-                            <HistoryIcon className="w-6 h-6 text-[var(--bg-primary)]" />
-                        </div>
-                        <div>
-                            <h1 className="page-title">Historique</h1>
-                            <p className="page-subtitle" style={{ marginTop: '0.2rem' }}>Vos prompts optimisés précédents</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        {/* Search bar */}
-                        <div className="relative group w-full sm:w-auto">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Rechercher..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="bg-[var(--bg-surface)] border border-[var(--glass-border)] rounded-full py-3.5 pl-12 pr-10 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all w-full sm:w-96"
-                            />
-                            {searchTerm && (
-                                <button
-                                    onClick={() => setSearchTerm('')}
-                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-[var(--bg-secondary)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-                                >
-                                    <X className="w-3.5 h-3.5" />
-                                </button>
-                            )}
-                        </div>
-
-                        {history.length > 0 && (
+                <div style={{ marginBottom: '2.5rem' }}>
+                    {/* Title row */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             <div
-                                className="hidden sm:flex items-center gap-3 px-6 py-3.5 rounded-full flex-shrink-0"
                                 style={{
-                                    background: 'var(--bg-surface)',
-                                    border: '1px solid var(--glass-border)',
+                                    width: '3rem',
+                                    height: '3rem',
+                                    borderRadius: '1rem',
+                                    background: 'var(--gradient-primary)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                    boxShadow: 'var(--neon-glow-md)',
                                 }}
                             >
-                                <Sparkles className="w-5 h-5" style={{ color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.5))' }} />
-                                <span className="text-base font-bold text-[var(--text-primary)]">
+                                <HistoryIcon className="w-6 h-6" style={{ color: 'var(--bg-primary)' }} />
+                            </div>
+                            <div>
+                                <h1 className="page-title">Historique</h1>
+                                <p className="page-subtitle" style={{ marginTop: '0.25rem' }}>Vos prompts optimisés précédents</p>
+                            </div>
+                        </div>
+
+                        {/* Count badge */}
+                        {history.length > 0 && (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.625rem',
+                                    padding: '0.75rem 1.25rem',
+                                    borderRadius: '9999px',
+                                    background: 'var(--bg-surface)',
+                                    border: '1px solid var(--glass-border)',
+                                    flexShrink: 0,
+                                }}
+                            >
+                                <Sparkles style={{ width: '1.25rem', height: '1.25rem', color: 'var(--primary)', filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.5))' }} />
+                                <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                                     {history.length}
                                 </span>
                             </div>
+                        )}
+                    </div>
+
+                    {/* Search bar — full width on its own row */}
+                    <div style={{ position: 'relative' }}>
+                        <Search
+                            style={{
+                                position: 'absolute',
+                                left: '1.25rem',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '1.125rem',
+                                height: '1.125rem',
+                                color: 'var(--text-muted)',
+                            }}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Rechercher dans votre historique..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '1rem 3rem 1rem 3.25rem',
+                                fontSize: '0.9375rem',
+                                color: 'var(--text-primary)',
+                                background: 'var(--bg-surface)',
+                                border: '1px solid var(--glass-border)',
+                                borderRadius: '9999px',
+                                outline: 'none',
+                                transition: 'border-color 0.2s, box-shadow 0.2s',
+                            }}
+                            onFocus={(e) => {
+                                e.target.style.borderColor = 'var(--primary)';
+                                e.target.style.boxShadow = '0 0 0 3px rgba(57,255,20,0.1)';
+                            }}
+                            onBlur={(e) => {
+                                e.target.style.borderColor = 'var(--glass-border)';
+                                e.target.style.boxShadow = 'none';
+                            }}
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={() => setSearchTerm('')}
+                                style={{
+                                    position: 'absolute',
+                                    right: '1rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    padding: '0.25rem',
+                                    borderRadius: '9999px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-muted)',
+                                }}
+                            >
+                                <X style={{ width: '1rem', height: '1rem' }} />
+                            </button>
                         )}
                     </div>
                 </div>

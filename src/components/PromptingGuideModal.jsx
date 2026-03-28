@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, Lightbulb, Zap, Shield, Leaf, FileText } from 'lucide-react';
+import { X, Lightbulb, Zap, Shield, Leaf } from 'lucide-react';
 
 const PromptingGuideModal = ({ isOpen, onClose }) => {
     useEffect(() => {
@@ -15,145 +15,219 @@ const PromptingGuideModal = ({ isOpen, onClose }) => {
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+            className="fixed inset-0 z-[100] flex items-center justify-center"
+            style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', padding: '1.5rem' }}
             onClick={onClose}
         >
+            {/* Modal card — NO glass-card class to avoid overflow:hidden / position:relative conflicts */}
             <div
-                className="glass-card max-w-2xl w-full relative"
                 onClick={(e) => e.stopPropagation()}
-                style={{ maxHeight: '85vh', padding: 0 }}
+                style={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '42rem',
+                    maxHeight: '85vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    background: 'var(--glass-bg)',
+                    backdropFilter: 'blur(24px)',
+                    WebkitBackdropFilter: 'blur(24px)',
+                    border: '1px solid var(--glass-border)',
+                    borderRadius: 'var(--radius-lg)',
+                    boxShadow: '0 8px 40px rgba(0,0,0,0.45)',
+                }}
             >
-                {/* Close Button — fixed inside the card, above the scroll area */}
+                {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors z-20 bg-[var(--bg-surface)]/80 backdrop-blur-md rounded-full border border-[var(--glass-border)]"
+                    style={{
+                        position: 'absolute',
+                        top: '1.25rem',
+                        right: '1.25rem',
+                        zIndex: 30,
+                        padding: '0.5rem',
+                        borderRadius: '9999px',
+                        background: 'rgba(17,30,22,0.85)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid var(--glass-border)',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        transition: 'color 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
                 >
                     <X className="w-5 h-5" />
                 </button>
 
-                {/* Inner scroll container */}
-                <div style={{ overflowY: 'auto', maxHeight: '85vh', padding: '3rem 3rem', scrollbarWidth: 'thin', scrollbarColor: 'var(--primary) transparent' }}>
-
-
-                {/* Header */}
-                <div className="flex items-center gap-5 mb-12">
-                    <div
-                        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center flex-shrink-0"
-                        style={{ boxShadow: 'var(--neon-glow-lg)' }}
-                    >
-                        <Lightbulb className="w-8 h-8 text-[var(--bg-primary)]" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-bold gradient-text" style={{ fontFamily: 'var(--font-display)' }}>Guide des Bonnes Pratiques</h2>
-                        <p className="text-[var(--text-secondary)] mt-3 text-sm">Maîtrisez l'art du prompt efficient et souverain.</p>
-                    </div>
-                </div>
-
-                {/* Content Sections */}
-                <div className="grid grid-cols-1 gap-12">
-                    {/* Section 1: Sovereignty (3.png) */}
-                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--accent)]/30 transition-colors">
-                        <div className="aspect-[21/9] w-full relative overflow-hidden">
-                            <img src="/3.png" alt="Souveraineté" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
+                {/* Scrollable content area */}
+                <div
+                    style={{
+                        overflowY: 'auto',
+                        padding: '3rem',
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: 'var(--primary) transparent',
+                    }}
+                >
+                    {/* Header */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '3rem' }}>
+                        <div
+                            style={{
+                                width: '4rem',
+                                height: '4rem',
+                                borderRadius: '1rem',
+                                background: 'var(--gradient-primary)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                                boxShadow: 'var(--neon-glow-lg)',
+                            }}
+                        >
+                            <Lightbulb className="w-8 h-8" style={{ color: 'var(--bg-primary)' }} />
                         </div>
-                        <div className="p-8">
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center border border-[var(--accent)]/20">
-                                    <Shield className="w-5 h-5 text-[var(--accent)]" />
-                                </div>
-                                <h3 className="text-xl font-bold text-[var(--text-primary)]">1. Choisissez la Souveraineté</h3>
-                            </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                Privilégiez des modèles européens (ex: <strong>Mistral</strong>) pour vos données sensibles. Ces modèles ne sont pas soumis aux lois extra-territoriales US (Cloud Act) et garantissent un respect strict du RGPD.
+                        <div>
+                            <h2
+                                className="gradient-text"
+                                style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'var(--font-display)', lineHeight: 1.2 }}
+                            >
+                                Guide des Bonnes Pratiques
+                            </h2>
+                            <p style={{ color: 'var(--text-secondary)', marginTop: '0.75rem', fontSize: '0.875rem' }}>
+                                Maîtrisez l'art du prompt efficient et souverain.
                             </p>
                         </div>
                     </div>
 
-                    {/* Section 2: Eco Impact (1.png) */}
-                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--eco-a)]/30 transition-colors">
-                        <div className="aspect-[21/9] w-full relative overflow-hidden">
-                            <img src="/1.png" alt="Impact Éco" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
-                        </div>
-                        <div className="p-8">
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="w-10 h-10 rounded-xl bg-[var(--eco-a)]/10 flex items-center justify-center border border-[var(--eco-a)]/20">
-                                    <Leaf className="w-5 h-5 text-[var(--eco-a)]" />
-                                </div>
-                                <h3 className="text-xl font-bold text-[var(--text-primary)]">2. Réduisez les "Tokens"</h3>
-                            </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
+                    {/* Sections */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+
+                        {/* Section 1 */}
+                        <SectionCard
+                            imgSrc="/3.png"
+                            imgAlt="Souveraineté"
+                            icon={<Shield className="w-5 h-5" style={{ color: 'var(--accent)' }} />}
+                            iconBg="rgba(0,255,135,0.1)"
+                            iconBorder="rgba(0,255,135,0.2)"
+                            hoverColor="var(--accent)"
+                            title="1. Choisissez la Souveraineté"
+                        >
+                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                                Privilégiez des modèles européens (ex: <strong style={{ color: 'var(--text-primary)' }}>Mistral</strong>) pour vos données sensibles. Ces modèles ne sont pas soumis aux lois extra-territoriales US (Cloud Act) et garantissent un respect strict du RGPD.
+                            </p>
+                        </SectionCard>
+
+                        {/* Section 2 */}
+                        <SectionCard
+                            imgSrc="/1.png"
+                            imgAlt="Impact Éco"
+                            icon={<Leaf className="w-5 h-5" style={{ color: 'var(--eco-a)' }} />}
+                            iconBg="rgba(57,255,20,0.1)"
+                            iconBorder="rgba(57,255,20,0.2)"
+                            hoverColor="var(--eco-a)"
+                            title="2. Réduisez les &quot;Tokens&quot;"
+                        >
+                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1rem' }}>
                                 Chaque token généré consomme de l'énergie et de l'eau. Soyez concis et évitez le remplissage inutile.
                             </p>
-                            <ul className="list-disc pl-5 text-sm text-[var(--text-muted)] space-y-3">
+                            <ul style={{ listStyle: 'disc', paddingLeft: '1.25rem', fontSize: '0.875rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                 <li>Supprimez les formules de politesse superflues.</li>
-                                <li>Utilisez des contraintes : <code className="bg-black/20 px-1.5 py-0.5 rounded">"Réponds en 1 phrase"</code>.</li>
+                                <li>Utilisez des contraintes : <code style={{ background: 'rgba(0,0,0,0.2)', padding: '0.125rem 0.375rem', borderRadius: '4px' }}>"Réponds en 1 phrase"</code>.</li>
                             </ul>
-                        </div>
+                        </SectionCard>
+
+                        {/* Section 3 */}
+                        <SectionCard
+                            imgSrc="/2.png"
+                            imgAlt="Performance"
+                            icon={<Zap className="w-5 h-5" style={{ color: 'var(--primary)' }} />}
+                            iconBg="rgba(57,255,20,0.1)"
+                            iconBorder="rgba(57,255,20,0.2)"
+                            hoverColor="var(--primary)"
+                            title="3. Structurez votre Contexte"
+                        >
+                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                                Utilisez des délimiteurs (<code style={{ background: 'rgba(0,0,0,0.2)', padding: '0.125rem 0.25rem', borderRadius: '4px' }}>"""</code>, <code style={{ background: 'rgba(0,0,0,0.2)', padding: '0.125rem 0.25rem', borderRadius: '4px' }}>###</code>) pour isoler vos instructions. Une structure claire réduit les hallucinations et évite les regénérations coûteuses.
+                            </p>
+                        </SectionCard>
+
+                        {/* Section 4 */}
+                        <SectionCard
+                            imgSrc="/4.png"
+                            imgAlt="Précision"
+                            icon={<Lightbulb className="w-5 h-5" style={{ color: 'var(--success, #4caf50)' }} />}
+                            iconBg="rgba(76,175,80,0.1)"
+                            iconBorder="rgba(76,175,80,0.2)"
+                            hoverColor="var(--success, #4caf50)"
+                            title="4. Soyez Précis et Direct"
+                        >
+                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.25rem' }}>
+                                Définissez clairement le <strong style={{ color: 'var(--text-primary)' }}>rôle</strong>, la <strong style={{ color: 'var(--text-primary)' }}>tâche</strong> et le <strong style={{ color: 'var(--text-primary)' }}>format</strong> de sortie attendu.
+                            </p>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(255,23,68,0.1)' }}>
+                                    <span style={{ fontSize: '0.625rem', color: 'var(--error, #ff1744)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.375rem', opacity: 0.6 }}>À éviter</span>
+                                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.4, fontStyle: 'italic' }}>"Bonjour, est-ce que tu pourrais m'aider à..."</span>
+                                </div>
+                                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(76,175,80,0.1)' }}>
+                                    <span style={{ fontSize: '0.625rem', color: 'var(--success, #4caf50)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '0.375rem', opacity: 0.6 }}>Idéal</span>
+                                    <span style={{ fontSize: '0.8125rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>"Analyse ce rapport et extrais les 3 points clés en format liste."</span>
+                                </div>
+                            </div>
+                        </SectionCard>
                     </div>
 
-                    {/* Section 3: Performance/Context (2.png) */}
-                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--primary)]/30 transition-colors">
-                        <div className="aspect-[21/9] w-full relative overflow-hidden">
-                            <img src="/2.png" alt="Performance" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
-                        </div>
-                        <div className="p-8">
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center border border-[var(--primary)]/20">
-                                    <Zap className="w-5 h-5 text-[var(--primary)]" />
-                                </div>
-                                <h3 className="text-xl font-bold text-[var(--text-primary)]">3. Structurez votre Contexte</h3>
-                            </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                Utilisez des délimiteurs (<code className="bg-black/20 px-1 py-0.5 rounded">"""</code>, <code className="bg-black/20 px-1 py-0.5 rounded">###</code>) pour isoler vos instructions. Une structure claire réduit les hallucinations et évite les regénérations coûteuses.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Section 4: Precision (4.png) */}
-                    <div className="rounded-2xl bg-[var(--bg-primary)] border border-[var(--glass-border)] overflow-hidden group hover:border-[var(--success)]/30 transition-colors">
-                        <div className="aspect-[21/9] w-full relative overflow-hidden">
-                            <img src="/4.png" alt="Précision" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
-                        </div>
-                        <div className="p-8">
-                            <div className="flex items-center gap-3 mb-5">
-                                <div className="w-10 h-10 rounded-xl bg-[var(--success)]/10 flex items-center justify-center border border-[var(--success)]/20">
-                                    <Lightbulb className="w-5 h-5 text-[var(--success)]" />
-                                </div>
-                                <h3 className="text-xl font-bold text-[var(--text-primary)]">4. Soyez Précis et Direct</h3>
-                            </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Définissez clairement le <strong>rôle</strong>, la <strong>tâche</strong> et le <strong>format</strong> de sortie attendu.
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-black/20 p-4 rounded-xl border border-[var(--error)]/10">
-                                    <span className="text-[10px] text-[var(--error)] font-bold uppercase tracking-widest block mb-1.5 opacity-60">À éviter</span>
-                                    <span className="text-[13px] text-[var(--text-muted)] leading-tight italic">"Bonjour, est-ce que tu pourrais m'aider à..."</span>
-                                </div>
-                                <div className="bg-black/20 p-4 rounded-xl border border-[var(--success)]/10">
-                                    <span className="text-[10px] text-[var(--success)] font-bold uppercase tracking-widest block mb-1.5 opacity-60">Idéal</span>
-                                    <span className="text-[13px] text-[var(--text-primary)] leading-tight">"Analyse ce rapport et extrais les 3 points clés en format liste."</span>
-                                </div>
-                            </div>
-                        </div>
+                    {/* Footer */}
+                    <div style={{ marginTop: '2.5rem', textAlign: 'center', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)' }}>
+                        <button
+                            onClick={onClose}
+                            className="btn btn-primary"
+                            style={{ padding: '0.875rem 2.5rem', fontSize: '0.9375rem', boxShadow: '0 4px 20px rgba(57,255,20,0.3)' }}
+                        >
+                            J'ai compris, retour à l'optimiseur
+                        </button>
                     </div>
                 </div>
-
-
-                {/* Footer Action */}
-                <div className="mt-10 text-center pt-8 border-t border-[var(--glass-border)]">
-                    <button onClick={onClose} className="btn btn-primary px-10 py-3.5 shadow-xl hover:scale-[1.02] active:scale-[0.98]">
-                        J'ai compris, retour à l'optimiseur
-                    </button>
-                </div>
-
-                </div>{/* end inner scroll container */}
             </div>
         </div>
     );
 };
+
+/* Reusable section card — all inline styles, no glass-card conflicts */
+const SectionCard = ({ imgSrc, imgAlt, icon, iconBg, iconBorder, title, children }) => (
+    <div
+        style={{
+            borderRadius: '1rem',
+            background: 'var(--bg-primary)',
+            border: '1px solid var(--glass-border)',
+            overflow: 'hidden',
+        }}
+    >
+        <div style={{ aspectRatio: '21/9', width: '100%', position: 'relative', overflow: 'hidden' }}>
+            <img src={imgSrc} alt={imgAlt} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg-primary), transparent)' }} />
+        </div>
+        <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <div
+                    style={{
+                        width: '2.5rem',
+                        height: '2.5rem',
+                        borderRadius: '0.75rem',
+                        background: iconBg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: `1px solid ${iconBorder}`,
+                    }}
+                >
+                    {icon}
+                </div>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)' }}>{title}</h3>
+            </div>
+            {children}
+        </div>
+    </div>
+);
 
 export default PromptingGuideModal;
