@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
             // If we are in background and have a token, we might not need a full refresh immediately
             // But let's verify connectivity and session state
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/refresh`, {
+            const response = await fetch('/auth/refresh', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refresh_token: refreshToken }),
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
                 const savedUser = localStorage.getItem('user_info');
                 if (!background || !savedUser) {
                     try {
-                        const meResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/auth/me`, {
+                        const meResponse = await fetch('/auth/me', {
                             headers: { 'Authorization': `Bearer ${data.access_token}` },
                         });
                         if (meResponse.ok) {

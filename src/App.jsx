@@ -44,8 +44,7 @@ const PageLoader = () => (
 function App() {
   // Warm up backend (Render free tier cold start mitigation)
   useEffect(() => {
-    const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-    fetch(`${API_URL}/health`).catch(() => {});
+    fetch('/health').catch(() => {});
   }, []);
 
   return (
