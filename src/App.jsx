@@ -22,6 +22,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const Confidentialite = lazy(() => import('./pages/Confidentialite'));
 const Contact = lazy(() => import('./pages/Contact'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Neon loading spinner fallback
 const PageLoader = () => (
@@ -98,7 +99,7 @@ function App() {
 
               {/* Default Redirect */}
               <Route path="/" element={<Navigate to="/generator" replace />} />
-              <Route path="*" element={<Navigate to="/generator" replace />} />
+              <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
             </Routes>
 
           </Suspense>

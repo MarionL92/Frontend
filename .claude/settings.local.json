@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find /c/Users/lisso/Downloads/pfe/Frontend -not -path */node_modules/* -type d)",
-      "Bash(npm run:*)",
-      "mcp__Claude_Preview__preview_start"
-    ]
-  }
-}

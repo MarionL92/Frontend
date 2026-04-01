@@ -644,6 +644,17 @@ a.neon-link:hover::after { width: 100%; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 
+/* Keyboard key styling */
+.kbd-key {
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  font-size: 0.65rem;
+  font-family: monospace;
+  color: var(--text-muted);
+}
+
 /* ================================
    LAYOUT UTILITIES
    ================================ */

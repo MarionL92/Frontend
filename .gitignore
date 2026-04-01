@@ -7,12 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
-*.local
+
+# Environment variables
 .env
-api_guide.md
+.env.*
+*.local
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +29,12 @@ api_guide.md
 *.njsproj
 *.sln
 *.sw?
+
+# Tool configs (not needed in deployment)
+.claude/
+.gemini/
+
+# Reports & docs not needed in repo
+eslint_report*.txt
+API_GUIDE.md
+api_guide.md
